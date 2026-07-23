@@ -1,0 +1,352 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Papel {
+  ADMIN
+  VET
+  RECEPCAO
+}
+
+enum Sexo {
+  MACHO
+  FEMEA
+}
+
+enum TipoProntuario {
+  CONSULTA
+  RETORNO
+  EXAME
+  VACINA
+  CIRURGIA
+  OUTRO
+}
+
+enum StatusAgendamento {
+  AGENDADO
+  CONFIRMADO
+  EM_ATENDIMENTO
+  CONCLUIDO
+  CANCELADO
+}
+
+enum StatusInternacao {
+  ATIVA
+  ALTA
+}
+
+enum FormaPagamento {
+  DINHEIRO
+  PIX
+  CARTAO_CREDITO
+  CARTAO_DEBITO
+  OUTRO
+}
+
+enum StatusCobranca {
+  PENDENTE
+  PAGO
+  CANCELADO
+}
+
+enum TipoMovimentoEstoque {
+  ENTRADA
+  SAIDA
+  AJUSTE
+}
+
+enum StatusTenant {
+  ATIVO
+  TRIAL
+  SUSPENSO
+}
+
+model Tenant {
+  id        String       @id @default(cuid())
+  nome      String
+  status    StatusTenant @default(TRIAL)
+  planoId   String?
+  criadoEm  DateTime     @default(now())
+
+  plano         Plano?        @relation(fields: [planoId], references: [id])
+  usuarios      Usuario[]
+  clientes      Cliente[]
+  pets          Pet[]
+  prontuarios   Prontuario[]
+  agendamentos  Agendamento[]
+  internacoes   Internacao[]
+  evolucoes     InternacaoEvolucao[]
+  vacinas       Vacina[]
+  cobrancas     Cobranca[]
+  produtos          Produto[]
+  movimentosEstoque MovimentoEstoque[]
+
+  @@index([planoId])
+}
+
+model Plano {
+  id                String   @id @default(cuid())
+  nome              String
+  limiteUsuarios    Int?
+  descricaoRecursos String?
+  precoReferencia   Float?
+  criadoEm          DateTime @default(now())
+
+  tenants Tenant[]
+}
+
+model SuperAdmin {
+  id        String   @id @default(cuid())
+  nome      String
+  email     String   @unique
+  senhaHash String
+  criadoEm  DateTime @default(now())
+}
+
+model Usuario {
+  id        String   @id @default(cuid())
+  tenantId  String
+  nome      String
+  email     String   @unique
+  senhaHash String
+  papel     Papel    @default(VET)
+  ativo     Boolean  @default(true)
+  criadoEm  DateTime @default(now())
+
+  tenant       Tenant        @relation(fields: [tenantId], references: [id])
+  prontuarios  Prontuario[]
+  agendamentos Agendamento[]
+  internacoes  Internacao[]
+  evolucoes    InternacaoEvolucao[]
+  vacinas      Vacina[]
+  cobrancas    Cobranca[]
+  movimentosEstoque MovimentoEstoque[]
+
+  @@index([tenantId])
+}
+
+model Cliente {
+  id        String   @id @default(cuid())
+  tenantId  String
+  nome      String
+  telefone  String
+  email     String?
+  cpf       String?
+  endereco  String?
+  criadoEm  DateTime @default(now())
+
+  tenant       Tenant        @relation(fields: [tenantId], references: [id])
+  pets         Pet[]
+  agendamentos Agendamento[]
+  cobrancas    Cobranca[]
+
+  @@index([tenantId])
+  @@index([nome])
+}
+
+model Pet {
+  id             String    @id @default(cuid())
+  tenantId       String
+  clienteId      String
+  nome           String
+  especie        String
+  raca           String?
+  sexo           Sexo?
+  dataNascimento DateTime?
+  peso           Float?
+  observacoes    String?
+  criadoEm       DateTime  @default(now())
+
+  tenant       Tenant        @relation(fields: [tenantId], references: [id])
+  cliente      Cliente       @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  prontuarios  Prontuario[]
+  agendamentos Agendamento[]
+  internacoes  Internacao[]
+  vacinas      Vacina[]
+  cobrancas    Cobranca[]
+
+  @@index([tenantId])
+  @@index([clienteId])
+}
+
+model Prontuario {
+  id          String         @id @default(cuid())
+  tenantId    String
+  petId       String
+  usuarioId   String
+  data        DateTime       @default(now())
+  tipo        TipoProntuario @default(CONSULTA)
+  anamnese    String?
+  diagnostico String?
+  prescricao  String?
+  observacoes String?
+  criadoEm    DateTime       @default(now())
+
+  tenant  Tenant  @relation(fields: [tenantId], references: [id])
+  pet     Pet     @relation(fields: [petId], references: [id], onDelete: Cascade)
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
+  movimentosEstoque MovimentoEstoque[]
+
+  @@index([tenantId])
+  @@index([petId])
+}
+
+model Agendamento {
+  id          String            @id @default(cuid())
+  tenantId    String
+  petId       String
+  clienteId   String
+  usuarioId   String
+  dataHora    DateTime
+  servico     String
+  status      StatusAgendamento @default(AGENDADO)
+  observacoes String?
+  criadoEm    DateTime          @default(now())
+
+  tenant    Tenant     @relation(fields: [tenantId], references: [id])
+  pet       Pet        @relation(fields: [petId], references: [id], onDelete: Cascade)
+  cliente   Cliente    @relation(fields: [clienteId], references: [id])
+  usuario   Usuario    @relation(fields: [usuarioId], references: [id])
+  cobrancas Cobranca[]
+
+  @@index([tenantId])
+  @@index([dataHora])
+  @@index([petId])
+}
+
+model Internacao {
+  id          String           @id @default(cuid())
+  tenantId    String
+  petId       String
+  usuarioId   String
+  motivo      String
+  status      StatusInternacao @default(ATIVA)
+  observacoes String?
+  dataEntrada DateTime         @default(now())
+  dataAlta    DateTime?
+  criadoEm    DateTime         @default(now())
+
+  tenant    Tenant               @relation(fields: [tenantId], references: [id])
+  pet       Pet                  @relation(fields: [petId], references: [id], onDelete: Cascade)
+  usuario   Usuario              @relation(fields: [usuarioId], references: [id])
+  evolucoes InternacaoEvolucao[]
+
+  @@index([tenantId])
+  @@index([petId])
+}
+
+model InternacaoEvolucao {
+  id           String   @id @default(cuid())
+  tenantId     String
+  internacaoId String
+  usuarioId    String
+  texto        String
+  data         DateTime @default(now())
+
+  tenant     Tenant     @relation(fields: [tenantId], references: [id])
+  internacao Internacao @relation(fields: [internacaoId], references: [id], onDelete: Cascade)
+  usuario    Usuario    @relation(fields: [usuarioId], references: [id])
+
+  @@index([tenantId])
+  @@index([internacaoId])
+}
+
+model Vacina {
+  id            String    @id @default(cuid())
+  tenantId      String
+  petId         String
+  usuarioId     String
+  nome          String
+  dataAplicacao DateTime  @default(now())
+  proximaDose   DateTime?
+  observacoes   String?
+  criadoEm      DateTime  @default(now())
+
+  tenant  Tenant  @relation(fields: [tenantId], references: [id])
+  pet     Pet     @relation(fields: [petId], references: [id], onDelete: Cascade)
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
+
+  @@index([tenantId])
+  @@index([petId])
+  @@index([proximaDose])
+}
+
+model Cobranca {
+  id             String          @id @default(cuid())
+  tenantId       String
+  clienteId      String
+  petId          String?
+  agendamentoId  String?
+  usuarioId      String
+  descricao      String
+  valor          Float
+  formaPagamento FormaPagamento?
+  status         StatusCobranca  @default(PENDENTE)
+  dataVencimento DateTime?
+  dataPagamento  DateTime?
+  observacoes    String?
+  criadoEm       DateTime        @default(now())
+
+  tenant      Tenant       @relation(fields: [tenantId], references: [id])
+  cliente     Cliente      @relation(fields: [clienteId], references: [id])
+  pet         Pet?         @relation(fields: [petId], references: [id])
+  agendamento Agendamento? @relation(fields: [agendamentoId], references: [id])
+  usuario     Usuario      @relation(fields: [usuarioId], references: [id])
+  movimentosEstoque MovimentoEstoque[]
+
+  @@index([tenantId])
+  @@index([clienteId])
+  @@index([status])
+}
+
+model Produto {
+  id               String   @id @default(cuid())
+  tenantId         String
+  nome             String
+  categoria        String?
+  unidadeMedida    String
+  quantidadeAtual  Float    @default(0)
+  quantidadeMinima Float    @default(0)
+  precoCusto       Float?
+  precoVenda       Float?
+  ativo            Boolean  @default(true)
+  criadoEm         DateTime @default(now())
+
+  tenant     Tenant             @relation(fields: [tenantId], references: [id])
+  movimentos MovimentoEstoque[]
+
+  @@index([tenantId])
+  @@index([nome])
+}
+
+model MovimentoEstoque {
+  id           String               @id @default(cuid())
+  tenantId     String
+  produtoId    String
+  prontuarioId String?
+  cobrancaId   String?
+  usuarioId    String
+  tipo         TipoMovimentoEstoque
+  quantidade   Float
+  observacoes  String?
+  criadoEm     DateTime             @default(now())
+
+  tenant     Tenant      @relation(fields: [tenantId], references: [id])
+  produto    Produto     @relation(fields: [produtoId], references: [id], onDelete: Cascade)
+  prontuario Prontuario? @relation(fields: [prontuarioId], references: [id])
+  cobranca   Cobranca?   @relation(fields: [cobrancaId], references: [id])
+  usuario    Usuario     @relation(fields: [usuarioId], references: [id])
+
+  @@index([tenantId])
+  @@index([produtoId])
+  @@index([prontuarioId])
+  @@index([cobrancaId])
+}
