@@ -1,28 +1,34 @@
 import { prisma } from "@/lib/prisma";
 
-async function assertPertenceAoTenant(
-  model: "cliente" | "pet" | "internacao",
-  id: string,
-  tenantId: string,
+async function assertExiste(
+  registro: { id: string } | null,
   mensagem: string
 ) {
-  const registro = await prisma[model].findUnique({
-    where: { id, tenantId },
-    select: { id: true },
-  });
   if (!registro) {
     throw new Error(mensagem);
   }
 }
 
-export function assertClientePertenceAoTenant(id: string, tenantId: string) {
-  return assertPertenceAoTenant("cliente", id, tenantId, "Cliente não encontrado.");
+export async function assertClientePertenceAoTenant(id: string, tenantId: string) {
+  const registro = await prisma.cliente.findUnique({
+    where: { id, tenantId },
+    select: { id: true },
+  });
+  await assertExiste(registro, "Cliente não encontrado.");
 }
 
-export function assertPetPertenceAoTenant(id: string, tenantId: string) {
-  return assertPertenceAoTenant("pet", id, tenantId, "Pet não encontrado.");
+export async function assertPetPertenceAoTenant(id: string, tenantId: string) {
+  const registro = await prisma.pet.findUnique({
+    where: { id, tenantId },
+    select: { id: true },
+  });
+  await assertExiste(registro, "Pet não encontrado.");
 }
 
-export function assertInternacaoPertenceAoTenant(id: string, tenantId: string) {
-  return assertPertenceAoTenant("internacao", id, tenantId, "Internação não encontrada.");
+export async function assertInternacaoPertenceAoTenant(id: string, tenantId: string) {
+  const registro = await prisma.internacao.findUnique({
+    where: { id, tenantId },
+    select: { id: true },
+  });
+  await assertExiste(registro, "Internação não encontrada.");
 }
