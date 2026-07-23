@@ -19,6 +19,8 @@ export async function criarCobranca(formData: FormData) {
     valor: formData.get("valor"),
     dataVencimento: formData.get("dataVencimento") ?? "",
     observacoes: formData.get("observacoes") ?? "",
+    servicoId: formData.get("servicoId") ?? "",
+    profissionalId: formData.get("profissionalId") ?? "",
   });
 
   await assertClientePertenceAoTenant(dados.clienteId, session.user.tenantId);
@@ -26,21 +28,47 @@ export async function criarCobranca(formData: FormData) {
     await assertPetPertenceAoTenant(dados.petId, session.user.tenantId);
   }
 
-  await prisma.cobranca.create({
-    data: {
-      tenantId: session.user.tenantId,
-      clienteId: dados.clienteId,
-      petId: dados.petId || null,
-      usuarioId: session.user.id,
-      descricao: dados.descricao,
-      valor: Number(dados.valor),
-      dataVencimento: dados.dataVencimento ? new Date(dados.dataVencimento) : null,
-      observacoes: dados.observacoes || null,
-    },
+  const valor = Number(dados.valor);
+
+  await prisma.$transaction(async (tx) => {
+    const cobranca = await tx.cobranca.create({
+      data: {
+        tenantId: session.user.tenantId,
+        clienteId: dados.clienteId,
+        petId: dados.petId || null,
+        usuarioId: session.user.id,
+        descricao: dados.descricao,
+        valor,
+        dataVencimento: dados.dataVencimento ? new Date(dados.dataVencimento) : null,
+        observacoes: dados.observacoes || null,
+      },
+    });
+
+    if (dados.servicoId && dados.profissionalId) {
+      const servico = await tx.servico.findUnique({
+        where: { id: dados.servicoId, tenantId: session.user.tenantId },
+      });
+      if (!servico) {
+        throw new Error("Serviço não encontrado.");
+      }
+
+      await tx.cobrancaServico.create({
+        data: {
+          tenantId: session.user.tenantId,
+          cobrancaId: cobranca.id,
+          servicoId: servico.id,
+          profissionalId: dados.profissionalId,
+          valor,
+          percentualComissao: servico.percentualComissao,
+          valorComissao: (valor * servico.percentualComissao) / 100,
+        },
+      });
+    }
   });
 
   revalidatePath("/financeiro");
   revalidatePath("/dashboard");
+  revalidatePath("/comissoes");
   redirect("/financeiro");
 }
 
@@ -63,6 +91,7 @@ export async function marcarComoPago(formData: FormData) {
 
   revalidatePath("/financeiro");
   revalidatePath("/dashboard");
+  revalidatePath("/comissoes");
 }
 
 export async function cancelarCobranca(cobrancaId: string) {

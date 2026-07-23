@@ -36,8 +36,10 @@ export const prontuarioSchema = z.object({
 export const agendamentoSchema = z.object({
   clienteId: z.string().min(1, "Selecione o tutor"),
   petId: z.string().min(1, "Selecione o pet"),
+  usuarioId: z.string().min(1, "Selecione o veterinário"),
   dataHora: z.string().min(1, "Informe data e hora"),
   servico: z.string().min(1, "Informe o serviço"),
+  servicoId: z.string().optional().or(z.literal("")),
   observacoes: z.string().optional().or(z.literal("")),
 });
 
@@ -74,6 +76,8 @@ export const cobrancaSchema = z.object({
   valor: z.string().min(1, "Informe o valor"),
   dataVencimento: z.string().optional().or(z.literal("")),
   observacoes: z.string().optional().or(z.literal("")),
+  servicoId: z.string().optional().or(z.literal("")),
+  profissionalId: z.string().optional().or(z.literal("")),
 });
 
 export const pagamentoSchema = z.object({
@@ -119,6 +123,32 @@ export const planoSchema = z.object({
   limiteUsuarios: z.string().optional().or(z.literal("")),
   descricaoRecursos: z.string().optional().or(z.literal("")),
   precoReferencia: z.string().optional().or(z.literal("")),
+});
+
+export const servicoSchema = z.object({
+  nome: z.string().min(2, "Informe o nome do serviço"),
+  precoPadrao: z.string().min(1, "Informe o preço padrão"),
+  percentualComissao: z.string().optional().or(z.literal("")),
+});
+
+export const empresaPerfilSchema = z.object({
+  nome: z.string().min(2, "Informe o nome da empresa"),
+  cnpj: z.string().optional().or(z.literal("")),
+  telefone: z.string().optional().or(z.literal("")),
+  email: z.string().email("E-mail inválido").optional().or(z.literal("")),
+  endereco: z.string().optional().or(z.literal("")),
+  horarioInicio: z
+    .string()
+    .regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Informe um horário válido"),
+  horarioFim: z
+    .string()
+    .regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Informe um horário válido"),
+  diasFuncionamento: z
+    .array(z.coerce.number().int().min(0).max(6))
+    .min(1, "Selecione ao menos um dia de funcionamento"),
+}).refine((dados) => dados.horarioInicio < dados.horarioFim, {
+  message: "O horário de abertura deve ser antes do horário de fechamento",
+  path: ["horarioFim"],
 });
 
 export const vendaPdvSchema = z.object({

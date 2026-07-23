@@ -15,11 +15,23 @@ export default async function NovaCobrancaPage({
   if (!podeGerenciarFinanceiro(session.user.papel)) redirect("/dashboard");
   const { clienteId } = await searchParams;
 
-  const clientes = await prisma.cliente.findMany({
-    where: { tenantId: session.user.tenantId },
-    select: { id: true, nome: true, pets: { select: { id: true, nome: true } } },
-    orderBy: { nome: "asc" },
-  });
+  const [clientes, servicos, profissionais] = await Promise.all([
+    prisma.cliente.findMany({
+      where: { tenantId: session.user.tenantId },
+      select: { id: true, nome: true, pets: { select: { id: true, nome: true } } },
+      orderBy: { nome: "asc" },
+    }),
+    prisma.servico.findMany({
+      where: { tenantId: session.user.tenantId, ativo: true },
+      select: { id: true, nome: true, precoPadrao: true },
+      orderBy: { nome: "asc" },
+    }),
+    prisma.usuario.findMany({
+      where: { tenantId: session.user.tenantId, papel: { in: ["ADMIN", "VET"] }, ativo: true },
+      select: { id: true, nome: true },
+      orderBy: { nome: "asc" },
+    }),
+  ]);
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
@@ -39,6 +51,8 @@ export default async function NovaCobrancaPage({
           <CobrancaForm
             clientes={clientes}
             clienteIdInicial={clienteId}
+            servicos={servicos}
+            profissionais={profissionais}
             action={criarCobranca}
           />
         </CardContent>

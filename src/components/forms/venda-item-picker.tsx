@@ -20,39 +20,85 @@ type ProdutoOption = {
   precoVenda: number | null;
 };
 
+type ServicoOption = {
+  id: string;
+  nome: string;
+  precoPadrao: number;
+};
+
+type Profissional = {
+  id: string;
+  nome: string;
+};
+
 type Linha = {
   chave: string;
+  tipo: "produto" | "servico";
   produtoId: string;
+  servicoId: string;
+  profissionalId: string;
   quantidade: string;
   precoUnitario: string;
 };
 
-export function VendaItemPicker({ produtos }: { produtos: ProdutoOption[] }) {
+export function VendaItemPicker({
+  produtos,
+  servicos,
+  profissionais,
+}: {
+  produtos: ProdutoOption[];
+  servicos: ServicoOption[];
+  profissionais: Profissional[];
+}) {
   const [linhas, setLinhas] = useState<Linha[]>([]);
 
   const produtoItems = Object.fromEntries(
     produtos.map((p) => [p.id, `${p.nome} (${p.unidadeMedida})`])
   );
+  const servicoItems = Object.fromEntries(servicos.map((s) => [s.id, s.nome]));
+  const profissionalItems = Object.fromEntries(profissionais.map((p) => [p.id, p.nome]));
 
-  const linhasValidas = linhas.filter(
-    (l) => l.produtoId && Number(l.quantidade) > 0 && Number(l.precoUnitario) >= 0
+  const linhasValidas = linhas.filter((l) =>
+    l.tipo === "produto"
+      ? l.produtoId && Number(l.quantidade) > 0 && Number(l.precoUnitario) >= 0
+      : l.servicoId && l.profissionalId && Number(l.precoUnitario) >= 0
   );
   const serializado = JSON.stringify(
-    linhasValidas.map((l) => ({
-      produtoId: l.produtoId,
-      quantidade: l.quantidade,
-      precoUnitario: l.precoUnitario,
-    }))
+    linhasValidas.map((l) =>
+      l.tipo === "produto"
+        ? {
+            tipo: "produto",
+            produtoId: l.produtoId,
+            quantidade: l.quantidade,
+            precoUnitario: l.precoUnitario,
+          }
+        : {
+            tipo: "servico",
+            servicoId: l.servicoId,
+            profissionalId: l.profissionalId,
+            precoUnitario: l.precoUnitario,
+          }
+    )
   );
   const total = linhasValidas.reduce(
-    (soma, l) => soma + Number(l.quantidade) * Number(l.precoUnitario),
+    (soma, l) =>
+      soma +
+      (l.tipo === "produto" ? Number(l.quantidade) : 1) * Number(l.precoUnitario || 0),
     0
   );
 
-  function adicionarLinha() {
+  function adicionarLinha(tipo: "produto" | "servico") {
     setLinhas((atual) => [
       ...atual,
-      { chave: crypto.randomUUID(), produtoId: "", quantidade: "1", precoUnitario: "" },
+      {
+        chave: crypto.randomUUID(),
+        tipo,
+        produtoId: "",
+        servicoId: "",
+        profissionalId: "",
+        quantidade: "1",
+        precoUnitario: "",
+      },
     ]);
   }
 
@@ -70,6 +116,14 @@ export function VendaItemPicker({ produtos }: { produtos: ProdutoOption[] }) {
     });
   }
 
+  function selecionarServico(chave: string, servicoId: string) {
+    const servico = servicos.find((s) => s.id === servicoId);
+    atualizarLinha(chave, {
+      servicoId,
+      precoUnitario: servico ? String(servico.precoPadrao) : "",
+    });
+  }
+
   function removerLinha(chave: string) {
     setLinhas((atual) => atual.filter((l) => l.chave !== chave));
   }
@@ -79,30 +133,71 @@ export function VendaItemPicker({ produtos }: { produtos: ProdutoOption[] }) {
       <input type="hidden" name="itensVenda" value={serializado} />
       {linhas.map((linha) => (
         <div key={linha.chave} className="flex items-center gap-2">
-          <Select
-            items={produtoItems}
-            value={linha.produtoId}
-            onValueChange={(value) => selecionarProduto(linha.chave, value ?? "")}
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Selecione o produto" />
-            </SelectTrigger>
-            <SelectContent>
-              {produtos.map((produto) => (
-                <SelectItem key={produto.id} value={produto.id}>
-                  {produto.nome} ({produto.unidadeMedida})
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Input
-            type="number"
-            min="0"
-            step="0.01"
-            className="w-24"
-            value={linha.quantidade}
-            onChange={(e) => atualizarLinha(linha.chave, { quantidade: e.target.value })}
-          />
+          {linha.tipo === "produto" ? (
+            <>
+              <Select
+                items={produtoItems}
+                value={linha.produtoId}
+                onValueChange={(value) => selecionarProduto(linha.chave, value ?? "")}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Selecione o produto" />
+                </SelectTrigger>
+                <SelectContent>
+                  {produtos.map((produto) => (
+                    <SelectItem key={produto.id} value={produto.id}>
+                      {produto.nome} ({produto.unidadeMedida})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Input
+                type="number"
+                min="0"
+                step="0.01"
+                className="w-24"
+                value={linha.quantidade}
+                onChange={(e) => atualizarLinha(linha.chave, { quantidade: e.target.value })}
+              />
+            </>
+          ) : (
+            <>
+              <Select
+                items={servicoItems}
+                value={linha.servicoId}
+                onValueChange={(value) => selecionarServico(linha.chave, value ?? "")}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Selecione o serviço" />
+                </SelectTrigger>
+                <SelectContent>
+                  {servicos.map((servico) => (
+                    <SelectItem key={servico.id} value={servico.id}>
+                      {servico.nome}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select
+                items={profissionalItems}
+                value={linha.profissionalId}
+                onValueChange={(value) =>
+                  atualizarLinha(linha.chave, { profissionalId: value ?? "" })
+                }
+              >
+                <SelectTrigger className="w-40">
+                  <SelectValue placeholder="Profissional" />
+                </SelectTrigger>
+                <SelectContent>
+                  {profissionais.map((profissional) => (
+                    <SelectItem key={profissional.id} value={profissional.id}>
+                      {profissional.nome}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </>
+          )}
           <Input
             type="number"
             min="0"
@@ -115,7 +210,8 @@ export function VendaItemPicker({ produtos }: { produtos: ProdutoOption[] }) {
           />
           <span className="w-28 text-right text-sm text-muted-foreground">
             {(
-              Number(linha.quantidade || 0) * Number(linha.precoUnitario || 0)
+              (linha.tipo === "produto" ? Number(linha.quantidade || 0) : 1) *
+              Number(linha.precoUnitario || 0)
             ).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
           </span>
           <Button
@@ -128,9 +224,14 @@ export function VendaItemPicker({ produtos }: { produtos: ProdutoOption[] }) {
           </Button>
         </div>
       ))}
-      <Button type="button" variant="outline" size="sm" onClick={adicionarLinha}>
-        <Plus className="h-4 w-4" /> Adicionar item
-      </Button>
+      <div className="flex gap-2">
+        <Button type="button" variant="outline" size="sm" onClick={() => adicionarLinha("produto")}>
+          <Plus className="h-4 w-4" /> Adicionar produto
+        </Button>
+        <Button type="button" variant="outline" size="sm" onClick={() => adicionarLinha("servico")}>
+          <Plus className="h-4 w-4" /> Adicionar serviço
+        </Button>
+      </div>
       <div className="flex justify-end pt-2 text-lg font-bold">
         Total: {total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
       </div>

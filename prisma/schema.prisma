@@ -76,6 +76,15 @@ model Tenant {
   planoId   String?
   criadoEm  DateTime     @default(now())
 
+  cnpj              String?
+  telefone          String?
+  email             String?
+  endereco          String?
+  logoUrl           String?
+  horarioInicio     String   @default("08:00")
+  horarioFim        String   @default("18:00")
+  diasFuncionamento Int[]    @default([1, 2, 3, 4, 5])
+
   plano         Plano?        @relation(fields: [planoId], references: [id])
   usuarios      Usuario[]
   clientes      Cliente[]
@@ -88,6 +97,8 @@ model Tenant {
   cobrancas     Cobranca[]
   produtos          Produto[]
   movimentosEstoque MovimentoEstoque[]
+  servicos          Servico[]
+  cobrancaServicos  CobrancaServico[]
 
   @@index([planoId])
 }
@@ -129,6 +140,7 @@ model Usuario {
   vacinas      Vacina[]
   cobrancas    Cobranca[]
   movimentosEstoque MovimentoEstoque[]
+  comissoes    CobrancaServico[]
 
   @@index([tenantId])
 }
@@ -205,21 +217,24 @@ model Agendamento {
   petId       String
   clienteId   String
   usuarioId   String
+  servicoId   String?
   dataHora    DateTime
   servico     String
   status      StatusAgendamento @default(AGENDADO)
   observacoes String?
   criadoEm    DateTime          @default(now())
 
-  tenant    Tenant     @relation(fields: [tenantId], references: [id])
-  pet       Pet        @relation(fields: [petId], references: [id], onDelete: Cascade)
-  cliente   Cliente    @relation(fields: [clienteId], references: [id])
-  usuario   Usuario    @relation(fields: [usuarioId], references: [id])
-  cobrancas Cobranca[]
+  tenant          Tenant     @relation(fields: [tenantId], references: [id])
+  pet             Pet        @relation(fields: [petId], references: [id], onDelete: Cascade)
+  cliente         Cliente    @relation(fields: [clienteId], references: [id])
+  usuario         Usuario    @relation(fields: [usuarioId], references: [id])
+  servicoCatalogo Servico?   @relation(fields: [servicoId], references: [id])
+  cobrancas       Cobranca[]
 
   @@index([tenantId])
   @@index([dataHora])
   @@index([petId])
+  @@index([servicoId])
 }
 
 model Internacao {
@@ -301,6 +316,7 @@ model Cobranca {
   agendamento Agendamento? @relation(fields: [agendamentoId], references: [id])
   usuario     Usuario      @relation(fields: [usuarioId], references: [id])
   movimentosEstoque MovimentoEstoque[]
+  itensServico      CobrancaServico[]
 
   @@index([tenantId])
   @@index([clienteId])
@@ -349,4 +365,43 @@ model MovimentoEstoque {
   @@index([produtoId])
   @@index([prontuarioId])
   @@index([cobrancaId])
+}
+
+model Servico {
+  id                 String   @id @default(cuid())
+  tenantId           String
+  nome               String
+  precoPadrao        Float
+  percentualComissao Float    @default(0)
+  ativo              Boolean  @default(true)
+  criadoEm           DateTime @default(now())
+
+  tenant       Tenant            @relation(fields: [tenantId], references: [id])
+  agendamentos Agendamento[]
+  itensCobranca CobrancaServico[]
+
+  @@index([tenantId])
+  @@index([nome])
+}
+
+model CobrancaServico {
+  id                 String   @id @default(cuid())
+  tenantId           String
+  cobrancaId         String
+  servicoId          String
+  profissionalId     String
+  valor              Float
+  percentualComissao Float
+  valorComissao      Float
+  criadoEm           DateTime @default(now())
+
+  tenant      Tenant   @relation(fields: [tenantId], references: [id])
+  cobranca    Cobranca @relation(fields: [cobrancaId], references: [id], onDelete: Cascade)
+  servico     Servico  @relation(fields: [servicoId], references: [id])
+  profissional Usuario @relation(fields: [profissionalId], references: [id])
+
+  @@index([tenantId])
+  @@index([cobrancaId])
+  @@index([profissionalId])
+  @@index([servicoId])
 }

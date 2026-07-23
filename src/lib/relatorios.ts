@@ -60,6 +60,40 @@ export async function getRelatorioAtendimentos(
   return { prontuarios, porVeterinario, porTipo };
 }
 
+export async function getRelatorioComissoes(
+  tenantId: string,
+  inicio: Date,
+  fim: Date,
+  profissionalId?: string
+) {
+  const itens = await prisma.cobrancaServico.findMany({
+    where: {
+      tenantId,
+      ...(profissionalId ? { profissionalId } : {}),
+      cobranca: {
+        status: "PAGO",
+        dataPagamento: { gte: inicio, lte: fim },
+      },
+    },
+    include: { servico: true, profissional: true, cobranca: true },
+    orderBy: { criadoEm: "asc" },
+  });
+
+  const total = itens.reduce((soma, i) => soma + i.valorComissao, 0);
+
+  const porProfissional = new Map<string, { nome: string; total: number }>();
+  for (const item of itens) {
+    const atual = porProfissional.get(item.profissionalId) ?? {
+      nome: item.profissional.nome,
+      total: 0,
+    };
+    atual.total += item.valorComissao;
+    porProfissional.set(item.profissionalId, atual);
+  }
+
+  return { itens, total, porProfissional };
+}
+
 export async function getClientesInativos(tenantId: string, diasInativo: number) {
   const clientes = await prisma.cliente.findMany({
     where: { tenantId },

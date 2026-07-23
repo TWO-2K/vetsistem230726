@@ -131,6 +131,20 @@ async function main() {
     },
   });
 
+  const servicosDemo = [
+    { id: "servico-demo-consulta", nome: "Consulta", precoPadrao: 80, percentualComissao: 20 },
+    { id: "servico-demo-banho", nome: "Banho", precoPadrao: 60, percentualComissao: 15 },
+    { id: "servico-demo-vacina", nome: "Vacina", precoPadrao: 50, percentualComissao: 10 },
+    { id: "servico-demo-cirurgia", nome: "Cirurgia", precoPadrao: 300, percentualComissao: 25 },
+  ];
+  for (const s of servicosDemo) {
+    await prisma.servico.upsert({
+      where: { id: s.id },
+      update: {},
+      create: { ...s, tenantId: tenant.id },
+    });
+  }
+
   const amanha = new Date();
   amanha.setDate(amanha.getDate() + 1);
   amanha.setHours(10, 0, 0, 0);

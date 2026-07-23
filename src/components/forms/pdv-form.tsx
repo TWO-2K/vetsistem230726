@@ -27,13 +27,28 @@ type ProdutoOption = {
   precoVenda: number | null;
 };
 
+type ServicoOption = {
+  id: string;
+  nome: string;
+  precoPadrao: number;
+};
+
+type Profissional = {
+  id: string;
+  nome: string;
+};
+
 export function PdvForm({
   clientes,
   produtos,
+  servicos,
+  profissionais,
   action,
 }: {
   clientes: ClienteComPets[];
   produtos: ProdutoOption[];
+  servicos: ServicoOption[];
+  profissionais: Profissional[];
   action: (formData: FormData) => void;
 }) {
   const [clienteId, setClienteId] = useState("");
@@ -86,7 +101,7 @@ export function PdvForm({
 
       <div className="space-y-2">
         <Label>Itens</Label>
-        <VendaItemPicker produtos={produtos} />
+        <VendaItemPicker produtos={produtos} servicos={servicos} profissionais={profissionais} />
       </div>
 
       <div className="space-y-2 sm:w-64">

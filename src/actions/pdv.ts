@@ -20,24 +20,50 @@ export async function registrarVendaPdv(formData: FormData) {
   });
 
   const itensRaw = formData.get("itensVenda");
-  const itens = itensRaw
-    ? (
-        JSON.parse(itensRaw as string) as {
-          produtoId: string;
-          quantidade: string;
-          precoUnitario: string;
-        }[]
-      )
-        .map((item) => ({
+  type ItemProduto = {
+    tipo: "produto";
+    produtoId: string;
+    quantidade: number;
+    precoUnitario: number;
+  };
+  type ItemServico = {
+    tipo: "servico";
+    servicoId: string;
+    profissionalId: string;
+    precoUnitario: number;
+  };
+
+  const itensBrutos = itensRaw
+    ? (JSON.parse(itensRaw as string) as Array<
+        | { tipo: "produto"; produtoId: string; quantidade: string; precoUnitario: string }
+        | { tipo: "servico"; servicoId: string; profissionalId: string; precoUnitario: string }
+      >)
+    : [];
+
+  const itens = itensBrutos
+    .map((item): ItemProduto | ItemServico | null => {
+      if (item.tipo === "produto") {
+        return {
+          tipo: "produto",
           produtoId: item.produtoId,
           quantidade: Number(item.quantidade),
           precoUnitario: Number(item.precoUnitario),
-        }))
-        .filter(
-          (item) =>
-            item.produtoId && item.quantidade > 0 && item.precoUnitario >= 0
-        )
-    : [];
+        };
+      }
+      return {
+        tipo: "servico",
+        servicoId: item.servicoId,
+        profissionalId: item.profissionalId,
+        precoUnitario: Number(item.precoUnitario),
+      };
+    })
+    .filter((item): item is ItemProduto | ItemServico => {
+      if (!item) return false;
+      if (item.tipo === "produto") {
+        return Boolean(item.produtoId) && item.quantidade > 0 && item.precoUnitario >= 0;
+      }
+      return Boolean(item.servicoId) && Boolean(item.profissionalId) && item.precoUnitario >= 0;
+    });
 
   if (itens.length === 0) {
     throw new Error("Adicione ao menos um item à venda.");
@@ -49,7 +75,8 @@ export async function registrarVendaPdv(formData: FormData) {
   }
 
   const valorTotal = itens.reduce(
-    (soma, item) => soma + item.quantidade * item.precoUnitario,
+    (soma, item) =>
+      soma + (item.tipo === "produto" ? item.quantidade : 1) * item.precoUnitario,
     0
   );
 
@@ -69,35 +96,56 @@ export async function registrarVendaPdv(formData: FormData) {
     });
 
     for (const item of itens) {
-      const produto = await tx.produto.findUnique({
-        where: { id: item.produtoId, tenantId: session.user.tenantId },
-      });
-      if (!produto) {
-        throw new Error("Produto não encontrado.");
-      }
+      if (item.tipo === "produto") {
+        const produto = await tx.produto.findUnique({
+          where: { id: item.produtoId, tenantId: session.user.tenantId },
+        });
+        if (!produto) {
+          throw new Error("Produto não encontrado.");
+        }
 
-      const novaQuantidade = produto.quantidadeAtual - item.quantidade;
-      if (novaQuantidade < 0) {
-        throw new Error(
-          `Estoque insuficiente para "${produto.nome}". Disponível: ${produto.quantidadeAtual} ${produto.unidadeMedida}.`
-        );
-      }
+        const novaQuantidade = produto.quantidadeAtual - item.quantidade;
+        if (novaQuantidade < 0) {
+          throw new Error(
+            `Estoque insuficiente para "${produto.nome}". Disponível: ${produto.quantidadeAtual} ${produto.unidadeMedida}.`
+          );
+        }
 
-      await tx.movimentoEstoque.create({
-        data: {
-          tenantId: session.user.tenantId,
-          produtoId: produto.id,
-          cobrancaId: cobranca.id,
-          usuarioId: session.user.id,
-          tipo: "SAIDA",
-          quantidade: -item.quantidade,
-          observacoes: "Baixa automática de venda PDV",
-        },
-      });
-      await tx.produto.update({
-        where: { id: produto.id },
-        data: { quantidadeAtual: novaQuantidade },
-      });
+        await tx.movimentoEstoque.create({
+          data: {
+            tenantId: session.user.tenantId,
+            produtoId: produto.id,
+            cobrancaId: cobranca.id,
+            usuarioId: session.user.id,
+            tipo: "SAIDA",
+            quantidade: -item.quantidade,
+            observacoes: "Baixa automática de venda PDV",
+          },
+        });
+        await tx.produto.update({
+          where: { id: produto.id },
+          data: { quantidadeAtual: novaQuantidade },
+        });
+      } else {
+        const servico = await tx.servico.findUnique({
+          where: { id: item.servicoId, tenantId: session.user.tenantId },
+        });
+        if (!servico) {
+          throw new Error("Serviço não encontrado.");
+        }
+
+        await tx.cobrancaServico.create({
+          data: {
+            tenantId: session.user.tenantId,
+            cobrancaId: cobranca.id,
+            servicoId: servico.id,
+            profissionalId: item.profissionalId,
+            valor: item.precoUnitario,
+            percentualComissao: servico.percentualComissao,
+            valorComissao: (item.precoUnitario * servico.percentualComissao) / 100,
+          },
+        });
+      }
     }
   });
 
@@ -105,5 +153,6 @@ export async function registrarVendaPdv(formData: FormData) {
   revalidatePath("/estoque");
   revalidatePath("/financeiro");
   revalidatePath("/dashboard");
+  revalidatePath("/comissoes");
   redirect("/financeiro");
 }

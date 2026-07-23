@@ -15,6 +15,9 @@ import {
   Package,
   ShoppingCart,
   FileBarChart,
+  Scissors,
+  Percent,
+  Building2,
 } from "lucide-react";
 
 const links = [
@@ -33,8 +36,12 @@ const linksFinanceiro = [
 const linksAdmin = [
   { href: "/funcionarios", label: "Funcionários", icon: UserRound },
   { href: "/estoque", label: "Estoque", icon: Package },
+  { href: "/servicos", label: "Serviços", icon: Scissors },
   { href: "/relatorios", label: "Relatórios", icon: FileBarChart },
+  { href: "/empresa", label: "Minha Empresa", icon: Building2 },
 ];
+
+const linksComissao = [{ href: "/comissoes", label: "Comissões", icon: Percent }];
 
 export function NavSidebar({ papel }: { papel: string }) {
   const pathname = usePathname();
@@ -42,6 +49,7 @@ export function NavSidebar({ papel }: { papel: string }) {
     ...links,
     ...(papel === "ADMIN" || papel === "RECEPCAO" ? linksFinanceiro : []),
     ...(papel === "ADMIN" ? linksAdmin : []),
+    ...(papel === "ADMIN" || papel === "VET" ? linksComissao : []),
   ];
 
   return (

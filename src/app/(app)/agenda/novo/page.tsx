@@ -7,11 +7,27 @@ import { criarAgendamento } from "@/actions/agendamentos";
 export default async function NovoAgendamentoPage() {
   const session = await requireSession();
 
-  const clientes = await prisma.cliente.findMany({
-    where: { tenantId: session.user.tenantId },
-    select: { id: true, nome: true, pets: { select: { id: true, nome: true } } },
-    orderBy: { nome: "asc" },
-  });
+  const [empresa, clientes, servicos, veterinarios] = await Promise.all([
+    prisma.tenant.findUniqueOrThrow({
+      where: { id: session.user.tenantId },
+      select: { horarioInicio: true, horarioFim: true },
+    }),
+    prisma.cliente.findMany({
+      where: { tenantId: session.user.tenantId },
+      select: { id: true, nome: true, pets: { select: { id: true, nome: true } } },
+      orderBy: { nome: "asc" },
+    }),
+    prisma.servico.findMany({
+      where: { tenantId: session.user.tenantId, ativo: true },
+      select: { id: true, nome: true },
+      orderBy: { nome: "asc" },
+    }),
+    prisma.usuario.findMany({
+      where: { tenantId: session.user.tenantId, papel: { in: ["ADMIN", "VET"] } },
+      select: { id: true, nome: true },
+      orderBy: { nome: "asc" },
+    }),
+  ]);
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
@@ -28,7 +44,14 @@ export default async function NovoAgendamentoPage() {
           <CardTitle>Dados do agendamento</CardTitle>
         </CardHeader>
         <CardContent>
-          <AgendamentoForm clientes={clientes} action={criarAgendamento} />
+          <AgendamentoForm
+            clientes={clientes}
+            servicos={servicos}
+            veterinarios={veterinarios}
+            action={criarAgendamento}
+            horarioInicio={empresa.horarioInicio}
+            horarioFim={empresa.horarioFim}
+          />
         </CardContent>
       </Card>
     </div>

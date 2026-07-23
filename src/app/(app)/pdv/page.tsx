@@ -9,7 +9,7 @@ export default async function PdvPage() {
   const session = await requireSession();
   if (!podeGerenciarFinanceiro(session.user.papel)) redirect("/dashboard");
 
-  const [clientes, produtos] = await Promise.all([
+  const [clientes, produtos, servicos, profissionais] = await Promise.all([
     prisma.cliente.findMany({
       where: { tenantId: session.user.tenantId },
       include: { pets: true },
@@ -17,6 +17,15 @@ export default async function PdvPage() {
     }),
     prisma.produto.findMany({
       where: { tenantId: session.user.tenantId, ativo: true },
+      orderBy: { nome: "asc" },
+    }),
+    prisma.servico.findMany({
+      where: { tenantId: session.user.tenantId, ativo: true },
+      orderBy: { nome: "asc" },
+    }),
+    prisma.usuario.findMany({
+      where: { tenantId: session.user.tenantId, papel: { in: ["ADMIN", "VET"] }, ativo: true },
+      select: { id: true, nome: true },
       orderBy: { nome: "asc" },
     }),
   ]);
@@ -31,7 +40,13 @@ export default async function PdvPage() {
           Venda de produtos com baixa automática de estoque.
         </p>
       </div>
-      <PdvForm clientes={clientes} produtos={produtos} action={registrarVendaPdv} />
+      <PdvForm
+        clientes={clientes}
+        produtos={produtos}
+        servicos={servicos}
+        profissionais={profissionais}
+        action={registrarVendaPdv}
+      />
     </div>
   );
 }
