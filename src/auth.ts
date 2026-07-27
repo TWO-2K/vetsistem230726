@@ -3,9 +3,19 @@ import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { signInSchema } from "@/lib/validations";
+import {
+  ContaBloqueadaError,
+  limparTentativas,
+  registrarTentativaFalha,
+  verificarBloqueio,
+} from "@/lib/login-rate-limit";
 
 export class EmpresaSuspensaError extends CredentialsSignin {
   code = "empresa-suspensa";
+}
+
+export class ContaBloqueadaAuthError extends CredentialsSignin {
+  code = "conta-bloqueada";
 }
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -23,19 +33,32 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const parsed = signInSchema.safeParse(credentials);
         if (!parsed.success) return null;
 
+        try {
+          await verificarBloqueio("tenant", parsed.data.email);
+        } catch (error) {
+          if (error instanceof ContaBloqueadaError) throw new ContaBloqueadaAuthError();
+          throw error;
+        }
+
         const usuario = await prisma.usuario.findUnique({
           where: { email: parsed.data.email },
           include: { tenant: true },
         });
-        if (!usuario) return null;
-        if (!usuario.ativo) return null;
+        if (!usuario || !usuario.ativo) {
+          await registrarTentativaFalha("tenant", parsed.data.email);
+          return null;
+        }
         if (usuario.tenant.status === "SUSPENSO") throw new EmpresaSuspensaError();
 
         const senhaValida = await bcrypt.compare(
           parsed.data.password,
           usuario.senhaHash
         );
-        if (!senhaValida) return null;
+        if (!senhaValida) {
+          await registrarTentativaFalha("tenant", parsed.data.email);
+          return null;
+        }
+        await limparTentativas("tenant", parsed.data.email);
 
         return {
           id: usuario.id,
@@ -58,16 +81,30 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const parsed = signInSchema.safeParse(credentials);
         if (!parsed.success) return null;
 
+        try {
+          await verificarBloqueio("super-admin", parsed.data.email);
+        } catch (error) {
+          if (error instanceof ContaBloqueadaError) throw new ContaBloqueadaAuthError();
+          throw error;
+        }
+
         const superAdmin = await prisma.superAdmin.findUnique({
           where: { email: parsed.data.email },
         });
-        if (!superAdmin) return null;
+        if (!superAdmin) {
+          await registrarTentativaFalha("super-admin", parsed.data.email);
+          return null;
+        }
 
         const senhaValida = await bcrypt.compare(
           parsed.data.password,
           superAdmin.senhaHash
         );
-        if (!senhaValida) return null;
+        if (!senhaValida) {
+          await registrarTentativaFalha("super-admin", parsed.data.email);
+          return null;
+        }
+        await limparTentativas("super-admin", parsed.data.email);
 
         return {
           id: superAdmin.id,

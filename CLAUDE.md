@@ -2,15 +2,15 @@
 
 # VET_SISTEMA
 
-Sistema de gestão veterinária multi-tenant (single-tenant na prática hoje). Next.js 16 (App Router) + React 19 + Prisma 7 + PostgreSQL (Supabase em produção, Docker local em dev) + NextAuth v5 + Zod + Tailwind + Base UI.
+Sistema de gestão veterinária multi-tenant (single-tenant na prática hoje). Next.js 16 (App Router) + React 19 + Prisma 7 + PostgreSQL (Supabase) + NextAuth v5 + Zod + Tailwind + Base UI.
 
 Dev server roda na porta **3010** (`npm run dev`).
 
 ## Banco de dados
-- `prisma.config.ts` carrega `.env` (produção, Supabase) e depois `.env.local` sobrepõe (dev local, Docker). `DIRECT_URL` é usada por Migrate/seed; `DATABASE_URL` (via pooler, porta 6543) é usada pela aplicação em runtime.
+- **Desde 2026-07-27: sem banco local via Docker.** Enquanto o sistema estiver em fase de testes, dev local conecta direto no banco Supabase (nuvem) — `.env` e `.env.local` apontam para as mesmas URLs de produção. Cuidado: `migrate dev`, `db seed` e qualquer teste manual afetam dados reais na nuvem.
+- `prisma.config.ts` carrega `.env` e depois `.env.local` sobrepõe. `DIRECT_URL` (porta 5432, conexão direta) é usada por Migrate/seed; `DATABASE_URL` (via pooler, porta 6543) é usada pela aplicação em runtime.
 - Client customizado: `src/generated/prisma/client` (não é o `@prisma/client` padrão) + `@prisma/adapter-pg`.
 - Sempre rodar `npx prisma generate` depois de qualquer `migrate dev`/mudança no schema — o client fica desatualizado até isso rodar.
-- Para aplicar migrations locais no Supabase (produção): usar `npx prisma migrate deploy` com `.env.local` temporariamente fora do caminho (ele sobrepõe pra Docker local). Ver seção de deploy abaixo.
 - Seed: `npx prisma db seed` (nunca rodar `npx tsx prisma/seed.ts` direto — pula o carregamento de env do Prisma e quebra a conexão).
 
 ## Estrutura
@@ -37,10 +37,4 @@ Módulos existentes: clientes, pets, prontuários, agenda (agendamentos), intern
 Níveis 0-6 completos (Clientes/Pets/Prontuário, Agenda, Funcionários/RBAC, Internação, Vacinas, Financeiro, Estoque, PDV, Relatórios, Serviços/Comissão). Falta apenas o **Nível 7**: super-admin real / multi-tenant de verdade / hardening pra produção no Supabase.
 
 ## Deploy de migrations pro Supabase (produção)
-`prisma.config.ts` usa `DIRECT_URL` pra migrate/seed. Localmente o `.env.local` sobrepõe pra Docker, então pra rodar contra produção:
-```powershell
-Rename-Item .env.local .env.local.bak
-npx prisma migrate deploy
-Rename-Item .env.local.bak .env.local
-```
-Ou definir `DIRECT_URL` inline no shell antes do comando (sem tocar em arquivos). Na Vercel, `prisma generate` já roda no build automaticamente — não precisa rodar manualmente lá.
+`prisma.config.ts` usa `DIRECT_URL` pra migrate/seed. Como `.env` e `.env.local` agora apontam pro mesmo banco (nuvem), `npx prisma migrate deploy`/`migrate dev` já afeta produção diretamente — não há mais um banco Docker separado para isolar isso. Na Vercel, `prisma generate` já roda no build automaticamente — não precisa rodar manualmente lá.

@@ -42,9 +42,11 @@ export default async function LoginPage({
   const mensagemErro =
     params.error === "empresa-suspensa"
       ? "Sua empresa está inativa. Entre em contato com o suporte para reativar o acesso."
-      : params.error
-        ? "E-mail ou senha inválidos."
-        : null;
+      : params.error === "conta-bloqueada"
+        ? "Muitas tentativas de login incorretas. Tente novamente em alguns minutos."
+        : params.error
+          ? "E-mail ou senha inválidos."
+          : null;
 
   return (
     <div className="grid min-h-screen lg:grid-cols-2">

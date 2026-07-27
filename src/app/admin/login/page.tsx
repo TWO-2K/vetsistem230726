@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { AuthError } from "next-auth";
+import { AuthError, CredentialsSignin } from "next-auth";
 import { signIn } from "@/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,7 +29,9 @@ export default async function AdminLoginPage({
       });
     } catch (error) {
       if (error instanceof AuthError) {
-        redirect("/admin/login?error=1");
+        const code =
+          error instanceof CredentialsSignin ? error.code : "1";
+        redirect(`/admin/login?error=${code}`);
       }
       throw error;
     }
@@ -63,7 +65,9 @@ export default async function AdminLoginPage({
             </div>
             {params.error && (
               <p className="text-sm text-destructive">
-                E-mail ou senha inválidos.
+                {params.error === "conta-bloqueada"
+                  ? "Muitas tentativas de login incorretas. Tente novamente em alguns minutos."
+                  : "E-mail ou senha inválidos."}
               </p>
             )}
             <Button type="submit" className="w-full">

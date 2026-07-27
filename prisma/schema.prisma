@@ -122,6 +122,14 @@ model SuperAdmin {
   criadoEm  DateTime @default(now())
 }
 
+model TentativaLogin {
+  id           String    @id @default(cuid())
+  identificador String   @unique
+  tentativas   Int       @default(0)
+  bloqueadoAte DateTime?
+  atualizadoEm DateTime  @updatedAt
+}
+
 model Usuario {
   id        String   @id @default(cuid())
   tenantId  String
