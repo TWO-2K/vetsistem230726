@@ -5,13 +5,14 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-geist-sans);
-  --font-body: var(--font-geist-sans);
-  --font-display: var(--font-geist-sans);
+  /* shadcn/Base UI compatibility layer — mapped to the "Pinheiro" palette below */
+  --color-background: var(--bg);
+  --color-foreground: var(--text);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-plex-mono);
+  --font-heading: var(--font-fraunces);
+  --font-body: var(--font-inter);
+  --font-display: var(--font-fraunces);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -20,103 +21,155 @@
   --color-sidebar-primary: var(--sidebar-primary);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
+  --color-chart-1: var(--primary);
+  --color-chart-2: var(--accent);
+  --color-chart-3: var(--info);
+  --color-chart-4: var(--warning);
+  --color-chart-5: var(--success);
   --color-ring: var(--ring);
-  --color-input: var(--input);
+  --color-input: var(--border-strong);
   --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
+  --color-destructive: var(--danger);
+  /* shadcn "accent" = subtle interactive surface (menu/select hover), not the brand accent color */
+  --color-accent-foreground: var(--primary);
+  --color-accent: var(--primary-subtle);
+  --color-muted-foreground: var(--text-secondary);
+  --color-muted: var(--bg-sunken);
+  --color-secondary-foreground: var(--text);
+  --color-secondary: var(--bg-sunken);
+  --color-primary-foreground: var(--primary-fg);
   --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
+  --color-popover-foreground: var(--text);
+  --color-popover: var(--bg-elevated);
+  --color-card-foreground: var(--text);
+  --color-card: var(--bg-elevated);
+
+  /* Pinheiro extras — semantic status + surface tokens as Tailwind utilities */
+  --color-bg: var(--bg);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-text: var(--text);
+  --color-bg-sunken: var(--bg-sunken);
+  --color-border-strong: var(--border-strong);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-tertiary);
+
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-subtle: var(--primary-subtle);
+  --color-primary-subtle-border: var(--primary-subtle-border);
+
+  /* Vivid brand accent (coral) — used deliberately, not for generic hover states */
+  --color-brand-accent: var(--accent);
+  --color-brand-accent-hover: var(--accent-hover);
+  --color-brand-accent-foreground: var(--accent-fg);
+  --color-brand-accent-subtle: var(--accent-subtle);
+
+  --color-success: var(--success);
+  --color-success-subtle: var(--success-subtle);
+  --color-warning: var(--warning);
+  --color-warning-subtle: var(--warning-subtle);
+  --color-danger: var(--danger);
+  --color-danger-subtle: var(--danger-subtle);
+  --color-info: var(--info);
+  --color-info-subtle: var(--info-subtle);
+
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: calc(var(--radius) * 0.75);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  --radius-xl: calc(var(--radius) * 1.25);
+  --radius-2xl: calc(var(--radius) * 1.5);
+  --radius-3xl: calc(var(--radius) * 1.75);
+  --radius-4xl: calc(var(--radius) * 2);
+
+  --shadow-sm: var(--shadow-sm-value);
+  --shadow-md: var(--shadow-md-value);
+  --shadow-lg: var(--shadow-lg-value);
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  /* Pinheiro — claro */
+  --bg: #F7F6F2;
+  --bg-elevated: #FFFFFF;
+  --bg-sunken: #F0EEE7;
+  --border: #E4E1D6;
+  --border-strong: #D3CFC1;
+  --text: #1B2620;
+  --text-secondary: #5C685F;
+  --text-tertiary: #8A927E;
+  --primary: #0E5C4C;
+  --primary-hover: #0A4A3D;
+  --primary-fg: #F7FBF9;
+  --primary-subtle: #E3EFE9;
+  --primary-subtle-border: #C7E0D5;
+  --accent: #E1663D;
+  --accent-hover: #C8532D;
+  --accent-fg: #FFF9F6;
+  --accent-subtle: #FBE9E1;
+  --success: #2E7D5B;
+  --success-subtle: #E3F3EA;
+  --warning: #B5791F;
+  --warning-subtle: #FBEDD9;
+  --danger: #B54636;
+  --danger-subtle: #F8E4DF;
+  --info: #35657F;
+  --info-subtle: #E4EEF3;
+
+  --radius: 16px;
+  --shadow-sm-value: 0 1px 2px rgba(27, 38, 32, 0.06);
+  --shadow-md-value: 0 4px 16px rgba(27, 38, 32, 0.08);
+  --shadow-lg-value: 0 12px 32px rgba(27, 38, 32, 0.14);
+
+  --sidebar: var(--bg-elevated);
+  --sidebar-foreground: var(--text);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-fg);
+  --sidebar-accent: var(--primary-subtle);
+  --sidebar-accent-foreground: var(--primary);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--primary);
+  --ring: var(--primary);
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  /* Pinheiro — escuro */
+  --bg: #101613;
+  --bg-elevated: #1A2320;
+  --bg-sunken: #0B0F0D;
+  --border: #2A342E;
+  --border-strong: #3A463E;
+  --text: #EDF2EE;
+  --text-secondary: #9FAEA5;
+  --text-tertiary: #6E7A72;
+  --primary: #4FAE8E;
+  --primary-hover: #6BC1A3;
+  --primary-fg: #0B1A15;
+  --primary-subtle: #1C332A;
+  --primary-subtle-border: #2C4B3E;
+  --accent: #F0895F;
+  --accent-hover: #F5A280;
+  --accent-fg: #29130A;
+  --accent-subtle: #3A2318;
+  --success: #5CBF95;
+  --success-subtle: #1B3126;
+  --warning: #E2A858;
+  --warning-subtle: #3A2C15;
+  --danger: #E2897A;
+  --danger-subtle: #3B211D;
+  --info: #7FB2CC;
+  --info-subtle: #1D2E38;
+
+  --shadow-sm-value: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md-value: 0 4px 16px rgba(0, 0, 0, 0.35);
+  --shadow-lg-value: 0 12px 32px rgba(0, 0, 0, 0.5);
+
+  --sidebar: var(--bg-elevated);
+  --sidebar-foreground: var(--text);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-fg);
+  --sidebar-accent: var(--primary-subtle);
+  --sidebar-accent-foreground: var(--primary);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--primary);
+  --ring: var(--primary);
 }
 
 @layer base {

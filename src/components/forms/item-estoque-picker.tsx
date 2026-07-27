@@ -84,7 +84,7 @@ export function ItemEstoquePicker({ produtos }: { produtos: ProdutoOption[] }) {
             type="number"
             min="0"
             step="0.01"
-            className="w-24"
+            className="w-24 font-mono"
             value={linha.quantidade}
             onChange={(e) =>
               atualizarLinha(linha.chave, { quantidade: e.target.value })

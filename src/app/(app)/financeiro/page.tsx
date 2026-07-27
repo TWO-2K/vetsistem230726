@@ -58,12 +58,12 @@ export default async function FinanceiroPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-heading font-bold tracking-tight">
+          <h1 className="font-heading text-2xl font-semibold tracking-tight text-text">
             Financeiro
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-text-secondary">
             Contas a receber da clínica.
           </p>
         </div>
@@ -73,36 +73,36 @@ export default async function FinanceiroPage() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <Card>
+        <Card className="shadow-sm">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+            <CardTitle className="text-sm font-medium text-text-secondary">
               A receber
             </CardTitle>
           </CardHeader>
-          <CardContent className="font-display text-3xl font-extrabold tracking-tight">
+          <CardContent className="font-mono text-3xl font-semibold tracking-tight text-text">
             {totalPendente.toLocaleString("pt-BR", {
               style: "currency",
               currency: "BRL",
             })}
           </CardContent>
         </Card>
-        <Card>
+        <Card className="shadow-sm">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+            <CardTitle className="text-sm font-medium text-text-secondary">
               Vencidas
             </CardTitle>
           </CardHeader>
-          <CardContent className="font-display text-3xl font-extrabold tracking-tight">
+          <CardContent className="font-display text-3xl font-semibold tracking-tight text-text">
             {vencidas.length}
           </CardContent>
         </Card>
-        <Card>
+        <Card className="shadow-sm">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+            <CardTitle className="text-sm font-medium text-text-secondary">
               Recebido no mês
             </CardTitle>
           </CardHeader>
-          <CardContent className="font-display text-3xl font-extrabold tracking-tight">
+          <CardContent className="font-mono text-3xl font-semibold tracking-tight text-text">
             {recebidoNoMes.toLocaleString("pt-BR", {
               style: "currency",
               currency: "BRL",
@@ -111,17 +111,19 @@ export default async function FinanceiroPage() {
         </Card>
       </div>
 
-      <Card>
+      <Card className="shadow-sm">
         <CardContent className="p-0">
           {cobrancas.length === 0 ? (
-            <div className="flex flex-col items-center gap-2 py-16 text-center text-muted-foreground">
-              <Wallet className="h-8 w-8" />
-              <p>Nenhuma cobrança lançada.</p>
+            <div className="flex flex-col items-center gap-2 py-16 text-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-bg-sunken text-text-tertiary">
+                <Wallet className="h-6 w-6" />
+              </div>
+              <p className="text-text-secondary">Nenhuma cobrança lançada.</p>
             </div>
           ) : (
             <Table>
               <TableHeader>
-                <TableRow>
+                <TableRow className="hover:bg-transparent">
                   <TableHead>Cliente</TableHead>
                   <TableHead>Descrição</TableHead>
                   <TableHead>Valor</TableHead>
@@ -138,7 +140,7 @@ export default async function FinanceiroPage() {
                   );
                   return (
                     <TableRow key={cobranca.id}>
-                      <TableCell className="font-medium">
+                      <TableCell className="font-medium text-text">
                         <Link
                           href={`/clientes/${cobranca.cliente.id}`}
                           className="hover:underline"
@@ -146,20 +148,20 @@ export default async function FinanceiroPage() {
                           {cobranca.cliente.nome}
                         </Link>
                         {cobranca.pet && (
-                          <span className="text-muted-foreground">
+                          <span className="text-text-tertiary">
                             {" "}
                             · {cobranca.pet.nome}
                           </span>
                         )}
                       </TableCell>
-                      <TableCell>{cobranca.descricao}</TableCell>
-                      <TableCell>
+                      <TableCell className="text-text-secondary">{cobranca.descricao}</TableCell>
+                      <TableCell className="font-mono text-text">
                         {cobranca.valor.toLocaleString("pt-BR", {
                           style: "currency",
                           currency: "BRL",
                         })}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="font-mono text-text-secondary">
                         {cobranca.dataVencimento
                           ? cobranca.dataVencimento.toLocaleDateString("pt-BR")
                           : "—"}
@@ -204,7 +206,7 @@ export default async function FinanceiroPage() {
                             </form>
                           </div>
                         ) : (
-                          <span className="text-xs text-muted-foreground">
+                          <span className="text-xs text-text-tertiary">
                             {cobranca.status === "PAGO" && cobranca.formaPagamento
                               ? FORMA_PAGAMENTO_LABEL[cobranca.formaPagamento]
                               : "—"}

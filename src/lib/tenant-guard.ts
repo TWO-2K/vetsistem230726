@@ -32,3 +32,11 @@ export async function assertInternacaoPertenceAoTenant(id: string, tenantId: str
   });
   await assertExiste(registro, "Internação não encontrada.");
 }
+
+export async function assertUsuarioPertenceAoTenant(id: string, tenantId: string) {
+  const registro = await prisma.usuario.findUnique({
+    where: { id, tenantId },
+    select: { id: true },
+  });
+  await assertExiste(registro, "Usuário não encontrado.");
+}

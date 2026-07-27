@@ -4,6 +4,7 @@ import { requireSession } from "@/lib/session";
 import { isAdmin } from "@/lib/rbac";
 import { getRelatorioFinanceiro } from "@/lib/relatorios";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -49,12 +50,12 @@ export default async function RelatorioFinanceiroPage({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-heading font-bold tracking-tight">
+          <h1 className="font-heading text-2xl font-semibold tracking-tight text-text">
             Financeiro por período
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-text-secondary">
             Cobranças pagas no intervalo selecionado.
           </p>
         </div>
@@ -65,27 +66,27 @@ export default async function RelatorioFinanceiroPage({
 
       <form className="flex flex-wrap items-end gap-3">
         <div className="space-y-1">
-          <label htmlFor="inicio" className="text-sm font-medium">
+          <label htmlFor="inicio" className="text-sm font-medium text-text-secondary">
             De
           </label>
-          <input
+          <Input
             id="inicio"
             type="date"
             name="inicio"
+            className="h-9 w-auto font-mono"
             defaultValue={paraInputDate(inicio)}
-            className="flex h-9 rounded-md border bg-transparent px-3 py-1 text-sm shadow-sm outline-none focus-visible:ring-1 focus-visible:ring-ring"
           />
         </div>
         <div className="space-y-1">
-          <label htmlFor="fim" className="text-sm font-medium">
+          <label htmlFor="fim" className="text-sm font-medium text-text-secondary">
             Até
           </label>
-          <input
+          <Input
             id="fim"
             type="date"
             name="fim"
+            className="h-9 w-auto font-mono"
             defaultValue={paraInputDate(fim)}
-            className="flex h-9 rounded-md border bg-transparent px-3 py-1 text-sm shadow-sm outline-none focus-visible:ring-1 focus-visible:ring-ring"
           />
         </div>
         <Button type="submit" variant="outline">
@@ -94,26 +95,26 @@ export default async function RelatorioFinanceiroPage({
       </form>
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <Card>
+        <Card className="shadow-sm">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+            <CardTitle className="text-sm font-medium text-text-secondary">
               Total recebido
             </CardTitle>
           </CardHeader>
-          <CardContent className="font-display text-3xl font-extrabold tracking-tight">
+          <CardContent className="font-mono text-3xl font-semibold tracking-tight text-text">
             {total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
           </CardContent>
         </Card>
         {(Object.keys(FORMA_PAGAMENTO_LABEL) as FormaPagamento[])
           .filter((forma) => totalPorForma[forma] > 0)
           .map((forma) => (
-            <Card key={forma}>
+            <Card key={forma} className="shadow-sm">
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
+                <CardTitle className="text-sm font-medium text-text-secondary">
                   {FORMA_PAGAMENTO_LABEL[forma]}
                 </CardTitle>
               </CardHeader>
-              <CardContent className="font-display text-3xl font-extrabold tracking-tight">
+              <CardContent className="font-mono text-3xl font-semibold tracking-tight text-text">
                 {totalPorForma[forma].toLocaleString("pt-BR", {
                   style: "currency",
                   currency: "BRL",
@@ -123,17 +124,19 @@ export default async function RelatorioFinanceiroPage({
           ))}
       </div>
 
-      <Card>
+      <Card className="shadow-sm">
         <CardContent className="p-0">
           {cobrancas.length === 0 ? (
-            <div className="flex flex-col items-center gap-2 py-16 text-center text-muted-foreground">
-              <Wallet className="h-8 w-8" />
-              <p>Nenhuma cobrança paga no período.</p>
+            <div className="flex flex-col items-center gap-2 py-16 text-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-bg-sunken text-text-tertiary">
+                <Wallet className="h-6 w-6" />
+              </div>
+              <p className="text-text-secondary">Nenhuma cobrança paga no período.</p>
             </div>
           ) : (
             <Table>
               <TableHeader>
-                <TableRow>
+                <TableRow className="hover:bg-transparent">
                   <TableHead>Data</TableHead>
                   <TableHead>Cliente</TableHead>
                   <TableHead>Descrição</TableHead>
@@ -144,19 +147,19 @@ export default async function RelatorioFinanceiroPage({
               <TableBody>
                 {cobrancas.map((cobranca) => (
                   <TableRow key={cobranca.id}>
-                    <TableCell>
+                    <TableCell className="font-mono text-text-secondary">
                       {cobranca.dataPagamento?.toLocaleDateString("pt-BR")}
                     </TableCell>
-                    <TableCell className="font-medium">
+                    <TableCell className="font-medium text-text">
                       {cobranca.cliente.nome}
                     </TableCell>
-                    <TableCell>{cobranca.descricao}</TableCell>
-                    <TableCell>
+                    <TableCell className="text-text-secondary">{cobranca.descricao}</TableCell>
+                    <TableCell className="text-text-secondary">
                       {cobranca.formaPagamento
                         ? FORMA_PAGAMENTO_LABEL[cobranca.formaPagamento]
                         : "—"}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="font-mono text-text">
                       {cobranca.valor.toLocaleString("pt-BR", {
                         style: "currency",
                         currency: "BRL",

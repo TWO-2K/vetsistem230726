@@ -74,129 +74,158 @@ export function AgendamentoForm({
     servicos.find((s) => s.id === servicoId)?.nome ?? "";
 
   return (
-    <form action={formAction} className="space-y-4">
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="space-y-2">
-          <Label htmlFor="clienteId">Tutor *</Label>
-          <Select
-            name="clienteId"
-            items={clienteItems}
-            value={clienteId}
-            onValueChange={(value) => setClienteId(value ?? "")}
-          >
-            <SelectTrigger id="clienteId" className="w-full">
-              <SelectValue placeholder="Selecione o tutor" />
-            </SelectTrigger>
-            <SelectContent>
-              {clientes.map((cliente) => (
-                <SelectItem key={cliente.id} value={cliente.id}>
-                  {cliente.nome}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="petId">Pet *</Label>
-          <Select
-            name="petId"
-            items={petItems}
-            disabled={!clienteId}
-            key={clienteId}
-          >
-            <SelectTrigger id="petId" className="w-full">
-              <SelectValue
-                placeholder={
-                  clienteId ? "Selecione o pet" : "Escolha o tutor primeiro"
-                }
-              />
-            </SelectTrigger>
-            <SelectContent>
-              {petsDoCliente.map((pet) => (
-                <SelectItem key={pet.id} value={pet.id}>
-                  {pet.nome}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="usuarioId">Veterinário *</Label>
-          <Select
-            name="usuarioId"
-            items={veterinarioItems}
-            value={usuarioId}
-            onValueChange={(value) => setUsuarioId(value ?? "")}
-          >
-            <SelectTrigger id="usuarioId" className="w-full">
-              <SelectValue placeholder="Selecione o veterinário" />
-            </SelectTrigger>
-            <SelectContent>
-              {veterinarios.map((vet) => (
-                <SelectItem key={vet.id} value={vet.id}>
-                  {vet.nome}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="dataHora">Data e hora *</Label>
-          <Input
-            id="dataHora"
-            name="dataHora"
-            type="datetime-local"
-            defaultValue={initialDataHora}
-            key={initialDataHora}
-            required
-          />
-          {horarioInicio && horarioFim && (
-            <p className="text-xs text-muted-foreground">
-              Funcionamento das {horarioInicio} às {horarioFim}
-            </p>
-          )}
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="servicoId">Serviço do catálogo</Label>
-          <Select
-            name="servicoId"
-            items={servicoItems}
-            value={servicoId}
-            onValueChange={(value) => setServicoId(value ?? "")}
-          >
-            <SelectTrigger id="servicoId" className="w-full">
-              <SelectValue placeholder="Selecione um serviço" />
-            </SelectTrigger>
-            <SelectContent>
-              {servicos.map((servico) => (
-                <SelectItem key={servico.id} value={servico.id}>
-                  {servico.nome}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="servico">Descrição do serviço *</Label>
-          <Input
-            id="servico"
-            name="servico"
-            defaultValue={nomeServicoSelecionado}
-            key={nomeServicoSelecionado}
-            placeholder="Consulta, vacina, banho..."
-            required
-          />
-        </div>
-        <div className="space-y-2 sm:col-span-2">
-          <Label htmlFor="observacoes">Observações</Label>
-          <Textarea id="observacoes" name="observacoes" />
+    <form action={formAction} className="space-y-6">
+      <div className="space-y-4">
+        <p className="text-xs font-medium tracking-wide text-text-tertiary uppercase">
+          Atendimento
+        </p>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="space-y-2">
+            <Label htmlFor="clienteId" className="text-text-secondary">
+              Tutor <span className="text-danger">*</span>
+            </Label>
+            <Select
+              name="clienteId"
+              items={clienteItems}
+              value={clienteId}
+              onValueChange={(value) => setClienteId(value ?? "")}
+            >
+              <SelectTrigger id="clienteId" className="w-full">
+                <SelectValue placeholder="Selecione o tutor" />
+              </SelectTrigger>
+              <SelectContent>
+                {clientes.map((cliente) => (
+                  <SelectItem key={cliente.id} value={cliente.id}>
+                    {cliente.nome}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="petId" className="text-text-secondary">
+              Pet <span className="text-danger">*</span>
+            </Label>
+            <Select
+              name="petId"
+              items={petItems}
+              disabled={!clienteId}
+              key={clienteId}
+            >
+              <SelectTrigger id="petId" className="w-full">
+                <SelectValue
+                  placeholder={
+                    clienteId ? "Selecione o pet" : "Escolha o tutor primeiro"
+                  }
+                />
+              </SelectTrigger>
+              <SelectContent>
+                {petsDoCliente.map((pet) => (
+                  <SelectItem key={pet.id} value={pet.id}>
+                    {pet.nome}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="usuarioId" className="text-text-secondary">
+              Veterinário <span className="text-danger">*</span>
+            </Label>
+            <Select
+              name="usuarioId"
+              items={veterinarioItems}
+              value={usuarioId}
+              onValueChange={(value) => setUsuarioId(value ?? "")}
+            >
+              <SelectTrigger id="usuarioId" className="w-full">
+                <SelectValue placeholder="Selecione o veterinário" />
+              </SelectTrigger>
+              <SelectContent>
+                {veterinarios.map((vet) => (
+                  <SelectItem key={vet.id} value={vet.id}>
+                    {vet.nome}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="dataHora" className="text-text-secondary">
+              Data e hora <span className="text-danger">*</span>
+            </Label>
+            <Input
+              id="dataHora"
+              name="dataHora"
+              type="datetime-local"
+              className="font-mono"
+              defaultValue={initialDataHora}
+              key={initialDataHora}
+              required
+            />
+            {horarioInicio && horarioFim && (
+              <p className="text-xs text-text-tertiary">
+                Funcionamento das {horarioInicio} às {horarioFim}
+              </p>
+            )}
+          </div>
         </div>
       </div>
+
+      <div className="space-y-4 border-t border-border pt-4">
+        <p className="text-xs font-medium tracking-wide text-text-tertiary uppercase">
+          Serviço
+        </p>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="space-y-2">
+            <Label htmlFor="servicoId" className="text-text-secondary">
+              Serviço do catálogo
+            </Label>
+            <Select
+              name="servicoId"
+              items={servicoItems}
+              value={servicoId}
+              onValueChange={(value) => setServicoId(value ?? "")}
+            >
+              <SelectTrigger id="servicoId" className="w-full">
+                <SelectValue placeholder="Selecione um serviço" />
+              </SelectTrigger>
+              <SelectContent>
+                {servicos.map((servico) => (
+                  <SelectItem key={servico.id} value={servico.id}>
+                    {servico.nome}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="servico" className="text-text-secondary">
+              Descrição do serviço <span className="text-danger">*</span>
+            </Label>
+            <Input
+              id="servico"
+              name="servico"
+              defaultValue={nomeServicoSelecionado}
+              key={nomeServicoSelecionado}
+              placeholder="Consulta, vacina, banho..."
+              required
+            />
+          </div>
+          <div className="space-y-2 sm:col-span-2">
+            <Label htmlFor="observacoes" className="text-text-secondary">
+              Observações
+            </Label>
+            <Textarea id="observacoes" name="observacoes" />
+          </div>
+        </div>
+      </div>
+
       {state?.error && (
-        <div className="space-y-2 rounded-md border border-destructive/30 bg-destructive/10 p-3">
-          <p className="text-sm text-destructive">{state.error}</p>
+        <div className="space-y-2 rounded-lg border border-danger/30 bg-danger-subtle p-3">
+          <p className="text-sm text-danger">{state.error}</p>
           {state.requireConfirm && (
-            <label className="flex items-center gap-2 text-sm text-foreground">
+            <label className="flex items-center gap-2 text-sm text-text">
               <input
                 type="checkbox"
                 checked={confirmarConflito}
@@ -210,7 +239,8 @@ export function AgendamentoForm({
       {confirmarConflito && (
         <input type="hidden" name="confirmarConflito" value="true" />
       )}
-      <div className="flex justify-end">
+
+      <div className="flex justify-end gap-2 border-t border-border pt-4">
         <Button type="submit" disabled={pending}>
           {pending ? "Agendando..." : "Agendar"}
         </Button>

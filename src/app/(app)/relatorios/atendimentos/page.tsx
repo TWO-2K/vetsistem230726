@@ -5,6 +5,7 @@ import { isAdmin } from "@/lib/rbac";
 import { prisma } from "@/lib/prisma";
 import { getRelatorioAtendimentos } from "@/lib/relatorios";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -64,12 +65,12 @@ export default async function RelatorioAtendimentosPage({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-heading font-bold tracking-tight">
+          <h1 className="font-heading text-2xl font-semibold tracking-tight text-text">
             Atendimentos por período
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-text-secondary">
             Prontuários registrados no intervalo selecionado.
           </p>
         </div>
@@ -80,31 +81,31 @@ export default async function RelatorioAtendimentosPage({
 
       <form className="flex flex-wrap items-end gap-3">
         <div className="space-y-1">
-          <label htmlFor="inicio" className="text-sm font-medium">
+          <label htmlFor="inicio" className="text-sm font-medium text-text-secondary">
             De
           </label>
-          <input
+          <Input
             id="inicio"
             type="date"
             name="inicio"
+            className="h-9 w-auto font-mono"
             defaultValue={paraInputDate(inicio)}
-            className="flex h-9 rounded-md border bg-transparent px-3 py-1 text-sm shadow-sm outline-none focus-visible:ring-1 focus-visible:ring-ring"
           />
         </div>
         <div className="space-y-1">
-          <label htmlFor="fim" className="text-sm font-medium">
+          <label htmlFor="fim" className="text-sm font-medium text-text-secondary">
             Até
           </label>
-          <input
+          <Input
             id="fim"
             type="date"
             name="fim"
+            className="h-9 w-auto font-mono"
             defaultValue={paraInputDate(fim)}
-            className="flex h-9 rounded-md border bg-transparent px-3 py-1 text-sm shadow-sm outline-none focus-visible:ring-1 focus-visible:ring-ring"
           />
         </div>
         <div className="w-56 space-y-1">
-          <label htmlFor="usuarioId" className="text-sm font-medium">
+          <label htmlFor="usuarioId" className="text-sm font-medium text-text-secondary">
             Veterinário
           </label>
           <Select name="usuarioId" items={usuarioItems} defaultValue={usuarioId}>
@@ -126,24 +127,24 @@ export default async function RelatorioAtendimentosPage({
       </form>
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <Card>
+        <Card className="shadow-sm">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+            <CardTitle className="text-sm font-medium text-text-secondary">
               Total de atendimentos
             </CardTitle>
           </CardHeader>
-          <CardContent className="font-display text-3xl font-extrabold tracking-tight">
+          <CardContent className="font-mono text-3xl font-semibold tracking-tight text-text">
             {prontuarios.length}
           </CardContent>
         </Card>
         {[...porVeterinario.entries()].map(([nome, count]) => (
-          <Card key={nome}>
+          <Card key={nome} className="shadow-sm">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
+              <CardTitle className="text-sm font-medium text-text-secondary">
                 {nome}
               </CardTitle>
             </CardHeader>
-            <CardContent className="font-display text-3xl font-extrabold tracking-tight">
+            <CardContent className="font-mono text-3xl font-semibold tracking-tight text-text">
               {count}
             </CardContent>
           </Card>
@@ -156,24 +157,26 @@ export default async function RelatorioAtendimentosPage({
           .map((tipo) => (
             <span
               key={tipo}
-              className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground"
+              className="rounded-full bg-bg-sunken px-3 py-1 text-xs font-medium text-text-secondary"
             >
               {TIPO_PRONTUARIO_LABEL[tipo]}: {porTipo[tipo]}
             </span>
           ))}
       </div>
 
-      <Card>
+      <Card className="shadow-sm">
         <CardContent className="p-0">
           {prontuarios.length === 0 ? (
-            <div className="flex flex-col items-center gap-2 py-16 text-center text-muted-foreground">
-              <CalendarDays className="h-8 w-8" />
-              <p>Nenhum atendimento no período.</p>
+            <div className="flex flex-col items-center gap-2 py-16 text-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-bg-sunken text-text-tertiary">
+                <CalendarDays className="h-6 w-6" />
+              </div>
+              <p className="text-text-secondary">Nenhum atendimento no período.</p>
             </div>
           ) : (
             <Table>
               <TableHeader>
-                <TableRow>
+                <TableRow className="hover:bg-transparent">
                   <TableHead>Data</TableHead>
                   <TableHead>Pet</TableHead>
                   <TableHead>Cliente</TableHead>
@@ -184,11 +187,15 @@ export default async function RelatorioAtendimentosPage({
               <TableBody>
                 {prontuarios.map((p) => (
                   <TableRow key={p.id}>
-                    <TableCell>{p.data.toLocaleDateString("pt-BR")}</TableCell>
-                    <TableCell className="font-medium">{p.pet.nome}</TableCell>
-                    <TableCell>{p.pet.cliente.nome}</TableCell>
-                    <TableCell>{TIPO_PRONTUARIO_LABEL[p.tipo]}</TableCell>
-                    <TableCell>{p.usuario.nome}</TableCell>
+                    <TableCell className="font-mono text-text-secondary">
+                      {p.data.toLocaleDateString("pt-BR")}
+                    </TableCell>
+                    <TableCell className="font-medium text-text">{p.pet.nome}</TableCell>
+                    <TableCell className="text-text-secondary">{p.pet.cliente.nome}</TableCell>
+                    <TableCell className="text-text-secondary">
+                      {TIPO_PRONTUARIO_LABEL[p.tipo]}
+                    </TableCell>
+                    <TableCell className="text-text-secondary">{p.usuario.nome}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

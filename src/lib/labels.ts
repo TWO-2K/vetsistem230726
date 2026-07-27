@@ -38,15 +38,11 @@ export const STATUS_VARIANT: Record<
 };
 
 export const STATUS_COLOR: Record<StatusAgendamento, string> = {
-  AGENDADO: "bg-sky-100 text-sky-700 dark:bg-sky-500/15 dark:text-sky-400",
-  CONFIRMADO:
-    "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400",
-  EM_ATENDIMENTO:
-    "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400",
-  CONCLUIDO:
-    "bg-slate-100 text-slate-700 dark:bg-slate-500/15 dark:text-slate-400",
-  CANCELADO:
-    "bg-rose-100 text-rose-700 dark:bg-rose-500/15 dark:text-rose-400",
+  AGENDADO: "bg-info-subtle text-info",
+  CONFIRMADO: "bg-warning-subtle text-warning",
+  EM_ATENDIMENTO: "bg-success-subtle text-success",
+  CONCLUIDO: "bg-bg-sunken text-text-secondary",
+  CANCELADO: "bg-danger-subtle text-danger",
 };
 
 export const TIPO_PRONTUARIO_LABEL: Record<TipoProntuario, string> = {
@@ -103,8 +99,8 @@ export const STATUS_INTERNACAO_LABEL: Record<StatusInternacao, string> = {
 };
 
 export const STATUS_INTERNACAO_COLOR: Record<StatusInternacao, string> = {
-  ATIVA: "bg-rose-100 text-rose-700 dark:bg-rose-500/15 dark:text-rose-400",
-  ALTA: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400",
+  ATIVA: "bg-danger-subtle text-danger",
+  ALTA: "bg-success-subtle text-success",
 };
 
 export const PAPEL_LABEL: Record<Papel, string> = {
@@ -122,11 +118,9 @@ export const STATUS_VACINA_LABEL: Record<StatusVacina, string> = {
 };
 
 export const STATUS_VACINA_COLOR: Record<StatusVacina, string> = {
-  VENCIDA: "bg-rose-100 text-rose-700 dark:bg-rose-500/15 dark:text-rose-400",
-  PROXIMA:
-    "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400",
-  EM_DIA:
-    "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400",
+  VENCIDA: "bg-danger-subtle text-danger",
+  PROXIMA: "bg-warning-subtle text-warning",
+  EM_DIA: "bg-success-subtle text-success",
 };
 
 export function getStatusVacina(
@@ -159,13 +153,10 @@ export const STATUS_COBRANCA_LABEL: Record<StatusCobranca, string> = {
 export type StatusCobrancaVisual = StatusCobranca | "VENCIDA";
 
 export const STATUS_COBRANCA_COLOR: Record<StatusCobrancaVisual, string> = {
-  PENDENTE:
-    "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400",
-  VENCIDA: "bg-rose-100 text-rose-700 dark:bg-rose-500/15 dark:text-rose-400",
-  PAGO:
-    "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400",
-  CANCELADO:
-    "bg-slate-100 text-slate-700 dark:bg-slate-500/15 dark:text-slate-400",
+  PENDENTE: "bg-warning-subtle text-warning",
+  VENCIDA: "bg-danger-subtle text-danger",
+  PAGO: "bg-success-subtle text-success",
+  CANCELADO: "bg-bg-sunken text-text-secondary",
 };
 
 export const STATUS_COBRANCA_VISUAL_LABEL: Record<StatusCobrancaVisual, string> = {
@@ -191,11 +182,9 @@ export const TIPO_MOVIMENTO_LABEL: Record<TipoMovimentoEstoque, string> = {
 };
 
 export const TIPO_MOVIMENTO_COLOR: Record<TipoMovimentoEstoque, string> = {
-  ENTRADA:
-    "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400",
-  SAIDA: "bg-rose-100 text-rose-700 dark:bg-rose-500/15 dark:text-rose-400",
-  AJUSTE:
-    "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400",
+  ENTRADA: "bg-success-subtle text-success",
+  SAIDA: "bg-danger-subtle text-danger",
+  AJUSTE: "bg-warning-subtle text-warning",
 };
 
 export const STATUS_TENANT_LABEL: Record<StatusTenant, string> = {

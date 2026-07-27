@@ -36,14 +36,14 @@ export default async function NovaCobrancaPage({
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div>
-        <h1 className="text-2xl font-heading font-bold tracking-tight">
+        <h1 className="font-heading text-2xl font-semibold tracking-tight text-text">
           Nova cobrança
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-text-secondary">
           Lance uma conta a receber para um cliente.
         </p>
       </div>
-      <Card>
+      <Card className="shadow-sm">
         <CardHeader>
           <CardTitle>Dados da cobrança</CardTitle>
         </CardHeader>

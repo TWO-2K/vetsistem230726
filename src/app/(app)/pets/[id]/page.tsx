@@ -4,7 +4,6 @@ import { requireSession } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Pencil, Trash2, PawPrint, Phone, Weight, Cake, BedDouble, Syringe } from "lucide-react";
 import { excluirPet } from "@/actions/pets";
 import { ProntuarioQuickAdd } from "@/components/forms/prontuario-quick-add";
@@ -65,26 +64,26 @@ export default async function PetDetalhePage({
     <div className="mx-auto max-w-3xl space-y-6">
       <Link
         href={`/clientes/${pet.cliente.id}`}
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-text"
       >
         <ArrowLeft className="h-3.5 w-3.5" /> {pet.cliente.nome}
       </Link>
 
-      <Card>
-        <CardContent className="flex flex-col gap-4 pt-6 sm:flex-row sm:items-start sm:justify-between">
+      <Card className="shadow-sm">
+        <CardContent className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex items-start gap-4">
-            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-primary-subtle text-primary">
               <PawPrint className="h-7 w-7" />
             </div>
             <div className="space-y-1.5">
               <div className="flex flex-wrap items-center gap-2">
-                <h1 className="text-2xl font-heading font-bold tracking-tight">
+                <h1 className="font-heading text-2xl font-semibold tracking-tight text-text">
                   {pet.nome}
                 </h1>
                 {pet.sexo && (
-                  <Badge variant="outline">
+                  <span className="rounded-full bg-info-subtle px-2.5 py-1 text-xs font-medium text-info">
                     {pet.sexo === "MACHO" ? "Macho" : "Fêmea"}
-                  </Badge>
+                  </span>
                 )}
                 {internacaoAtiva && (
                   <Link
@@ -98,30 +97,30 @@ export default async function PetDetalhePage({
                   </Link>
                 )}
               </div>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-text-secondary">
                 {pet.especie}
                 {pet.raca ? ` · ${pet.raca}` : ""}
               </p>
-              <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
+              <p className="flex flex-wrap items-center gap-1.5 text-sm text-text-secondary">
                 Tutor:{" "}
                 <Link
                   href={`/clientes/${pet.cliente.id}`}
-                  className="font-medium text-foreground hover:underline"
+                  className="font-medium text-text hover:underline"
                 >
                   {pet.cliente.nome}
                 </Link>
-                <span className="inline-flex items-center gap-1 text-muted-foreground">
+                <span className="inline-flex items-center gap-1 font-mono text-text-tertiary">
                   <Phone className="h-3 w-3" /> {pet.cliente.telefone}
                 </span>
               </p>
               <div className="flex flex-wrap gap-2 pt-1">
                 {pet.peso && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-medium text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-success-subtle px-2.5 py-1 font-mono text-xs font-medium text-success">
                     <Weight className="h-3 w-3" /> {pet.peso} kg
                   </span>
                 )}
                 {pet.dataNascimento && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-sky-100 px-2.5 py-1 text-xs font-medium text-sky-700 dark:bg-sky-500/15 dark:text-sky-400">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-info-subtle px-2.5 py-1 text-xs font-medium text-info">
                     <Cake className="h-3 w-3" /> {formatIdade(pet.dataNascimento)}
                   </span>
                 )}
@@ -146,14 +145,14 @@ export default async function PetDetalhePage({
         </CardContent>
         {pet.observacoes && (
           <CardContent className="pt-0 text-sm">
-            <span className="text-muted-foreground">Observações: </span>
-            {pet.observacoes}
+            <span className="text-text-secondary">Observações: </span>
+            <span className="text-text">{pet.observacoes}</span>
           </CardContent>
         )}
       </Card>
 
       {podeAgir && (
-        <Card>
+        <Card className="shadow-sm">
           <CardHeader>
             <CardTitle className="text-base">Novo registro</CardTitle>
           </CardHeader>
@@ -164,7 +163,7 @@ export default async function PetDetalhePage({
       )}
 
       {podeAgir && !internacaoAtiva && (
-        <Card>
+        <Card className="shadow-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
               <BedDouble className="h-4 w-4" /> Internação
@@ -177,7 +176,7 @@ export default async function PetDetalhePage({
       )}
 
       {podeAgir && (
-        <Card>
+        <Card className="shadow-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
               <Syringe className="h-4 w-4" /> Vacinas
@@ -186,7 +185,7 @@ export default async function PetDetalhePage({
           <CardContent className="space-y-4">
             <VacinaQuickAdd petId={pet.id} />
             {pet.vacinas.length > 0 && (
-              <div className="divide-y">
+              <div className="divide-y divide-border">
                 {pet.vacinas.map((vacina) => {
                   const status = getStatusVacina(vacina.proximaDose);
                   return (
@@ -195,8 +194,8 @@ export default async function PetDetalhePage({
                       className="flex flex-wrap items-center justify-between gap-2 py-3 first:pt-0 last:pb-0"
                     >
                       <div>
-                        <p className="font-medium">{vacina.nome}</p>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="font-medium text-text">{vacina.nome}</p>
+                        <p className="font-mono text-xs text-text-tertiary">
                           Aplicada em{" "}
                           {vacina.dataAplicacao.toLocaleDateString("pt-BR")}
                           {vacina.proximaDose &&
@@ -222,13 +221,13 @@ export default async function PetDetalhePage({
         </Card>
       )}
 
-      <Card>
+      <Card className="shadow-sm">
         <CardHeader>
           <CardTitle className="text-base">Histórico</CardTitle>
         </CardHeader>
         <CardContent>
           {pet.prontuarios.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-text-secondary">
               Nenhum registro de prontuário ainda.
             </p>
           ) : (
@@ -260,12 +259,12 @@ export default async function PetDetalhePage({
                         >
                           {TIPO_PRONTUARIO_LABEL[registro.tipo]}
                         </span>
-                        <span className="text-xs text-muted-foreground">
+                        <span className="font-mono text-xs text-text-tertiary">
                           {registro.data.toLocaleString("pt-BR")} ·{" "}
                           {registro.usuario.nome}
                         </span>
                       </div>
-                      <div className="mt-2 space-y-1 text-sm">
+                      <div className="mt-2 space-y-1 text-sm text-text">
                         {registro.anamnese && (
                           <p>
                             <span className="font-medium">Anamnese: </span>

@@ -33,10 +33,10 @@ export default async function RelatoriosPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-heading font-bold tracking-tight">
+        <h1 className="font-heading text-2xl font-semibold tracking-tight text-text">
           Relatórios
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-text-secondary">
           Visão agregada do financeiro, atendimentos e clientes da clínica.
         </p>
       </div>
@@ -44,14 +44,14 @@ export default async function RelatoriosPage() {
       <div className="grid gap-4 sm:grid-cols-3">
         {relatorios.map(({ href, label, descricao, icon: Icon }) => (
           <Link key={href} href={href}>
-            <Card className="h-full transition-colors hover:bg-muted/40">
+            <Card className="h-full shadow-sm transition-colors hover:bg-bg-sunken">
               <CardHeader className="flex flex-row items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-subtle text-primary">
                   <Icon className="h-4 w-4" />
                 </div>
-                <CardTitle className="text-base">{label}</CardTitle>
+                <CardTitle className="font-heading text-base">{label}</CardTitle>
               </CardHeader>
-              <CardContent className="text-sm text-muted-foreground">
+              <CardContent className="text-sm text-text-secondary">
                 {descricao}
               </CardContent>
             </Card>

@@ -22,10 +22,12 @@ export default async function NovoPetPage({
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div>
-        <h1 className="text-2xl font-heading font-bold tracking-tight">Novo pet</h1>
-        <p className="text-muted-foreground">Tutor: {cliente.nome}</p>
+        <h1 className="font-heading text-2xl font-semibold tracking-tight text-text">
+          Novo pet
+        </h1>
+        <p className="text-text-secondary">Tutor: {cliente.nome}</p>
       </div>
-      <Card>
+      <Card className="shadow-sm">
         <CardHeader>
           <CardTitle>Dados do pet</CardTitle>
         </CardHeader>

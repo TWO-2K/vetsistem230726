@@ -12,10 +12,10 @@ export default async function NovoServicoPage() {
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div>
-        <h1 className="text-2xl font-heading font-bold tracking-tight">Novo serviço</h1>
-        <p className="text-muted-foreground">Cadastre um novo serviço do catálogo.</p>
+        <h1 className="font-heading text-2xl font-semibold tracking-tight text-text">Novo serviço</h1>
+        <p className="text-text-secondary">Cadastre um novo serviço do catálogo.</p>
       </div>
-      <Card>
+      <Card className="shadow-sm">
         <CardHeader>
           <CardTitle>Dados do serviço</CardTitle>
         </CardHeader>

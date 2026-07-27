@@ -36,36 +36,36 @@ export default async function ProdutoDetalhePage({
     <div className="mx-auto max-w-3xl space-y-6">
       <Link
         href="/estoque"
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-text"
       >
         <ArrowLeft className="h-3.5 w-3.5" /> Estoque
       </Link>
 
-      <Card>
+      <Card className="shadow-sm">
         <CardContent className="flex flex-col gap-4 pt-6 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex items-start gap-4">
-            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-primary-subtle text-primary">
               <Package className="h-7 w-7" />
             </div>
             <div className="space-y-1.5">
-              <h1 className="text-2xl font-heading font-bold tracking-tight">
+              <h1 className="font-heading text-2xl font-semibold tracking-tight text-text">
                 {produto.nome}
                 {!produto.ativo && (
-                  <span className="ml-2 text-sm font-normal text-muted-foreground">
+                  <span className="ml-2 text-sm font-normal text-text-tertiary">
                     (Inativo)
                   </span>
                 )}
               </h1>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-text-secondary">
                 {produto.categoria ? `${produto.categoria} · ` : ""}
                 {produto.unidadeMedida}
               </p>
-              <p className="text-sm">
-                Estoque atual: <span className="font-medium">{produto.quantidadeAtual} {produto.unidadeMedida}</span>
+              <p className="font-mono text-sm text-text-secondary">
+                Estoque atual: <span className="font-medium text-text">{produto.quantidadeAtual} {produto.unidadeMedida}</span>
                 {" "}· Mínimo: {produto.quantidadeMinima} {produto.unidadeMedida}
               </p>
               {(produto.precoCusto || produto.precoVenda) && (
-                <p className="text-sm text-muted-foreground">
+                <p className="font-mono text-sm text-text-secondary">
                   {produto.precoCusto && `Custo: R$ ${produto.precoCusto.toFixed(2)}`}
                   {produto.precoCusto && produto.precoVenda && " · "}
                   {produto.precoVenda && `Venda: R$ ${produto.precoVenda.toFixed(2)}`}
@@ -105,18 +105,18 @@ export default async function ProdutoDetalhePage({
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="shadow-sm">
         <CardHeader>
           <CardTitle className="text-base">Movimentações</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <MovimentoEstoqueQuickAdd produtoId={produto.id} />
           {produto.movimentos.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-text-secondary">
               Nenhuma movimentação registrada ainda.
             </p>
           ) : (
-            <div className="divide-y">
+            <div className="divide-y divide-border">
               {produto.movimentos.map((mov) => (
                 <div
                   key={mov.id}
@@ -132,13 +132,13 @@ export default async function ProdutoDetalhePage({
                       >
                         {TIPO_MOVIMENTO_LABEL[mov.tipo]}
                       </span>
-                      <span className="font-medium">
+                      <span className="font-mono font-medium text-text">
                         {mov.quantidade > 0 ? "+" : ""}
                         {mov.quantidade} {produto.unidadeMedida}
                       </span>
                     </div>
                     {mov.observacoes && (
-                      <p className="text-sm text-muted-foreground">{mov.observacoes}</p>
+                      <p className="text-sm text-text-secondary">{mov.observacoes}</p>
                     )}
                     {mov.prontuario && (
                       <Link
@@ -149,7 +149,7 @@ export default async function ProdutoDetalhePage({
                       </Link>
                     )}
                   </div>
-                  <span className="text-xs text-muted-foreground">
+                  <span className="font-mono text-xs text-text-tertiary">
                     {mov.criadoEm.toLocaleString("pt-BR")} · {mov.usuario.nome}
                   </span>
                 </div>

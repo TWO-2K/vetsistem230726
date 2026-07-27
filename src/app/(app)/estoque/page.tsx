@@ -26,27 +26,31 @@ export default async function EstoquePage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-heading font-bold tracking-tight">Estoque</h1>
-          <p className="text-muted-foreground">Produtos e insumos da clínica.</p>
+          <h1 className="font-heading text-2xl font-semibold tracking-tight text-text">
+            Estoque
+          </h1>
+          <p className="text-text-secondary">Produtos e insumos da clínica.</p>
         </div>
         <Button render={<Link href="/estoque/novo" />} nativeButton={false}>
           <Plus className="h-4 w-4" /> Novo produto
         </Button>
       </div>
 
-      <Card>
+      <Card className="shadow-sm">
         <CardContent className="p-0">
           {produtos.length === 0 ? (
-            <div className="flex flex-col items-center gap-2 py-16 text-center text-muted-foreground">
-              <Package className="h-8 w-8" />
-              <p>Nenhum produto cadastrado.</p>
+            <div className="flex flex-col items-center gap-2 py-16 text-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-bg-sunken text-text-tertiary">
+                <Package className="h-6 w-6" />
+              </div>
+              <p className="text-text-secondary">Nenhum produto cadastrado.</p>
             </div>
           ) : (
             <Table>
               <TableHeader>
-                <TableRow>
+                <TableRow className="hover:bg-transparent">
                   <TableHead>Produto</TableHead>
                   <TableHead>Categoria</TableHead>
                   <TableHead>Unidade</TableHead>
@@ -60,26 +64,34 @@ export default async function EstoquePage() {
                   const estoqueBaixo = produto.quantidadeAtual < produto.quantidadeMinima;
                   return (
                     <TableRow key={produto.id} className="cursor-pointer">
-                      <TableCell className="font-medium">
+                      <TableCell className="font-medium text-text">
                         <Link
                           href={`/estoque/${produto.id}`}
                           className="block hover:underline"
                         >
                           {produto.nome}
                           {!produto.ativo && (
-                            <span className="ml-2 text-xs text-muted-foreground">
+                            <span className="ml-2 text-xs text-text-tertiary">
                               (Inativo)
                             </span>
                           )}
                         </Link>
                       </TableCell>
-                      <TableCell>{produto.categoria || "—"}</TableCell>
-                      <TableCell>{produto.unidadeMedida}</TableCell>
-                      <TableCell>{produto.quantidadeAtual}</TableCell>
-                      <TableCell>{produto.quantidadeMinima}</TableCell>
+                      <TableCell className="text-text-secondary">
+                        {produto.categoria || "—"}
+                      </TableCell>
+                      <TableCell className="text-text-secondary">
+                        {produto.unidadeMedida}
+                      </TableCell>
+                      <TableCell className="font-mono text-text-secondary">
+                        {produto.quantidadeAtual}
+                      </TableCell>
+                      <TableCell className="font-mono text-text-secondary">
+                        {produto.quantidadeMinima}
+                      </TableCell>
                       <TableCell>
                         {estoqueBaixo && (
-                          <span className="rounded-full bg-rose-100 px-2.5 py-1 text-xs font-medium text-rose-700 dark:bg-rose-500/15 dark:text-rose-400">
+                          <span className="rounded-full bg-danger-subtle px-2.5 py-1 text-xs font-medium text-danger">
                             Estoque baixo
                           </span>
                         )}

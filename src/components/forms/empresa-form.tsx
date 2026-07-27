@@ -68,98 +68,126 @@ export function EmpresaForm({
     <form action={action} className="space-y-6">
       <input type="hidden" name="removerLogo" value={removerLogo ? "true" : "false"} />
 
-      <div className="space-y-2">
-        <Label>Logo</Label>
-        <div className="flex items-center gap-4">
-          <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-lg border bg-muted/40">
-            {logoPreview ? (
-              <Image
-                src={logoPreview}
-                alt="Logo da empresa"
-                width={80}
-                height={80}
-                unoptimized
-                className="h-full w-full object-contain"
+      <div className="space-y-4">
+        <p className="text-xs font-medium tracking-wide text-text-tertiary uppercase">
+          Identificação
+        </p>
+        <div className="space-y-2">
+          <Label className="text-text-secondary">Logo</Label>
+          <div className="flex items-center gap-4">
+            <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-lg border border-border bg-bg-sunken">
+              {logoPreview ? (
+                <Image
+                  src={logoPreview}
+                  alt="Logo da empresa"
+                  width={80}
+                  height={80}
+                  unoptimized
+                  className="h-full w-full object-contain"
+                />
+              ) : (
+                <Building2 className="h-8 w-8 text-text-tertiary" />
+              )}
+            </div>
+            <div className="flex flex-col gap-2">
+              <Input
+                type="file"
+                name="logo"
+                accept="image/*"
+                onChange={selecionarLogo}
+                className="max-w-64"
               />
-            ) : (
-              <Building2 className="h-8 w-8 text-muted-foreground" />
-            )}
+              {logoPreview && (
+                <button
+                  type="button"
+                  onClick={removerLogoAtual}
+                  className="w-fit text-xs text-text-tertiary hover:text-danger"
+                >
+                  Remover logo
+                </button>
+              )}
+            </div>
           </div>
-          <div className="flex flex-col gap-2">
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="space-y-2">
+            <Label htmlFor="nome" className="text-text-secondary">
+              Nome da empresa <span className="text-danger">*</span>
+            </Label>
+            <Input id="nome" name="nome" defaultValue={empresa.nome} required />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="cnpj" className="text-text-secondary">
+              CNPJ
+            </Label>
+            <Input id="cnpj" name="cnpj" className="font-mono" defaultValue={empresa.cnpj ?? ""} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="telefone" className="text-text-secondary">
+              Telefone
+            </Label>
             <Input
-              type="file"
-              name="logo"
-              accept="image/*"
-              onChange={selecionarLogo}
-              className="max-w-64"
+              id="telefone"
+              name="telefone"
+              className="font-mono"
+              defaultValue={empresa.telefone ?? ""}
             />
-            {logoPreview && (
-              <button
-                type="button"
-                onClick={removerLogoAtual}
-                className="w-fit text-xs text-muted-foreground hover:text-destructive"
-              >
-                Remover logo
-              </button>
-            )}
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="email" className="text-text-secondary">
+              E-mail
+            </Label>
+            <Input id="email" name="email" type="email" defaultValue={empresa.email ?? ""} />
+          </div>
+          <div className="space-y-2 sm:col-span-2">
+            <Label htmlFor="endereco" className="text-text-secondary">
+              Endereço
+            </Label>
+            <Textarea id="endereco" name="endereco" defaultValue={empresa.endereco ?? ""} />
           </div>
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="space-y-2">
-          <Label htmlFor="nome">Nome da empresa *</Label>
-          <Input id="nome" name="nome" defaultValue={empresa.nome} required />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="cnpj">CNPJ</Label>
-          <Input id="cnpj" name="cnpj" defaultValue={empresa.cnpj ?? ""} />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="telefone">Telefone</Label>
-          <Input id="telefone" name="telefone" defaultValue={empresa.telefone ?? ""} />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="email">E-mail</Label>
-          <Input id="email" name="email" type="email" defaultValue={empresa.email ?? ""} />
-        </div>
-        <div className="space-y-2 sm:col-span-2">
-          <Label htmlFor="endereco">Endereço</Label>
-          <Textarea id="endereco" name="endereco" defaultValue={empresa.endereco ?? ""} />
-        </div>
-      </div>
-
-      <div className="space-y-3 border-t pt-4">
+      <div className="space-y-3 border-t border-border pt-4">
         <div>
-          <h3 className="font-heading text-sm font-semibold">Horário de funcionamento</h3>
-          <p className="text-sm text-muted-foreground">
+          <h3 className="font-heading text-sm font-semibold text-text">Horário de funcionamento</h3>
+          <p className="text-sm text-text-secondary">
             A agenda só permite marcar atendimentos dentro desse horário e nesses dias.
           </p>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 sm:max-w-md">
           <div className="space-y-2">
-            <Label htmlFor="horarioInicio">Abre às *</Label>
+            <Label htmlFor="horarioInicio" className="text-text-secondary">
+              Abre às <span className="text-danger">*</span>
+            </Label>
             <Input
               id="horarioInicio"
               name="horarioInicio"
               type="time"
+              className="font-mono"
               defaultValue={empresa.horarioInicio}
               required
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="horarioFim">Fecha às *</Label>
+            <Label htmlFor="horarioFim" className="text-text-secondary">
+              Fecha às <span className="text-danger">*</span>
+            </Label>
             <Input
               id="horarioFim"
               name="horarioFim"
               type="time"
+              className="font-mono"
               defaultValue={empresa.horarioFim}
               required
             />
           </div>
         </div>
         <div className="space-y-2">
-          <Label>Dias de funcionamento *</Label>
+          <Label className="text-text-secondary">
+            Dias de funcionamento <span className="text-danger">*</span>
+          </Label>
           <div className="flex flex-wrap gap-2">
             {DIAS.map((dia) => {
               const ativo = diasSelecionados.includes(dia.valor);
@@ -169,10 +197,10 @@ export function EmpresaForm({
                   type="button"
                   onClick={() => alternarDia(dia.valor)}
                   className={cn(
-                    "h-9 w-14 rounded-md border text-sm font-medium transition-colors",
+                    "h-9 w-14 rounded-lg border text-sm font-medium transition-colors",
                     ativo
                       ? "border-primary bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:bg-muted"
+                      : "border-border text-text-secondary hover:bg-bg-sunken"
                   )}
                 >
                   {dia.label}
@@ -186,7 +214,7 @@ export function EmpresaForm({
         </div>
       </div>
 
-      <div className="flex justify-end">
+      <div className="flex justify-end gap-2 border-t border-border pt-4">
         <Button type="submit">Salvar alterações</Button>
       </div>
     </form>

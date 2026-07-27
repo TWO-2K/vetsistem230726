@@ -26,25 +26,29 @@ export default async function InternacoesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-heading font-bold tracking-tight">
+        <h1 className="font-heading text-2xl font-semibold tracking-tight text-text">
           Internações
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-text-secondary">
           Pets internados e histórico de internações.
         </p>
       </div>
 
-      <Card>
+      <Card className="shadow-sm">
         <CardContent className="p-0">
           {internacoes.length === 0 ? (
-            <div className="flex flex-col items-center gap-2 py-16 text-center text-muted-foreground">
-              <BedDouble className="h-8 w-8" />
-              <p>Nenhuma internação registrada.</p>
+            <div className="flex flex-col items-center gap-2 py-16 text-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-bg-sunken text-text-tertiary">
+                <BedDouble className="h-6 w-6" />
+              </div>
+              <p className="text-text-secondary">
+                Nenhuma internação registrada.
+              </p>
             </div>
           ) : (
             <Table>
               <TableHeader>
-                <TableRow>
+                <TableRow className="hover:bg-transparent">
                   <TableHead>Pet</TableHead>
                   <TableHead>Tutor</TableHead>
                   <TableHead>Motivo</TableHead>
@@ -55,7 +59,7 @@ export default async function InternacoesPage() {
               <TableBody>
                 {internacoes.map((internacao) => (
                   <TableRow key={internacao.id} className="cursor-pointer">
-                    <TableCell className="font-medium">
+                    <TableCell className="font-medium text-text">
                       <Link
                         href={`/internacoes/${internacao.id}`}
                         className="block hover:underline"
@@ -63,9 +67,13 @@ export default async function InternacoesPage() {
                         {internacao.pet.nome}
                       </Link>
                     </TableCell>
-                    <TableCell>{internacao.pet.cliente.nome}</TableCell>
-                    <TableCell>{internacao.motivo}</TableCell>
-                    <TableCell>
+                    <TableCell className="text-text-secondary">
+                      {internacao.pet.cliente.nome}
+                    </TableCell>
+                    <TableCell className="text-text-secondary">
+                      {internacao.motivo}
+                    </TableCell>
+                    <TableCell className="font-mono text-text-secondary">
                       {internacao.dataEntrada.toLocaleDateString("pt-BR")}
                     </TableCell>
                     <TableCell>

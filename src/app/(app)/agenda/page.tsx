@@ -57,8 +57,10 @@ export default async function AgendaPage({
   return (
     <div className="flex h-full flex-col gap-4">
       <div>
-        <h1 className="text-2xl font-heading font-bold tracking-tight">Agenda</h1>
-        <p className="text-muted-foreground">
+        <h1 className="font-heading text-2xl font-semibold tracking-tight text-text">
+          Agenda
+        </h1>
+        <p className="text-text-secondary">
           Visão semanal ou diária dos atendimentos.
         </p>
       </div>

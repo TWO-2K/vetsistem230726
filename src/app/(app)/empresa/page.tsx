@@ -17,12 +17,12 @@ export default async function EmpresaPage() {
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div>
-        <h1 className="text-2xl font-heading font-bold tracking-tight">Minha empresa</h1>
-        <p className="text-muted-foreground">
+        <h1 className="font-heading text-2xl font-semibold tracking-tight text-text">Minha empresa</h1>
+        <p className="text-text-secondary">
           Dados gerais, endereço e horário de funcionamento da clínica.
         </p>
       </div>
-      <Card>
+      <Card className="shadow-sm">
         <CardHeader>
           <CardTitle>Perfil da empresa</CardTitle>
         </CardHeader>

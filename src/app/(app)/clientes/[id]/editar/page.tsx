@@ -22,12 +22,12 @@ export default async function EditarClientePage({
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div>
-        <h1 className="text-2xl font-heading font-bold tracking-tight">
+        <h1 className="font-heading text-2xl font-semibold tracking-tight text-text">
           Editar cliente
         </h1>
-        <p className="text-muted-foreground">{cliente.nome}</p>
+        <p className="text-text-secondary">{cliente.nome}</p>
       </div>
-      <Card>
+      <Card className="shadow-sm">
         <CardHeader>
           <CardTitle>Dados do cliente</CardTitle>
         </CardHeader>

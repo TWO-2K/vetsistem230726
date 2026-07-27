@@ -4,6 +4,7 @@ import { requireSession } from "@/lib/session";
 import { isAdmin } from "@/lib/rbac";
 import { getClientesInativos } from "@/lib/relatorios";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
@@ -32,12 +33,12 @@ export default async function RelatorioClientesInativosPage({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-heading font-bold tracking-tight">
+          <h1 className="font-heading text-2xl font-semibold tracking-tight text-text">
             Clientes inativos
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-text-secondary">
             Sem atendimento ou agendamento nos últimos {dias} dias.
           </p>
         </div>
@@ -48,16 +49,16 @@ export default async function RelatorioClientesInativosPage({
 
       <form className="flex flex-wrap items-end gap-3">
         <div className="space-y-1">
-          <label htmlFor="dias" className="text-sm font-medium">
+          <label htmlFor="dias" className="text-sm font-medium text-text-secondary">
             Dias sem atividade
           </label>
-          <input
+          <Input
             id="dias"
             type="number"
             name="dias"
             min="1"
+            className="h-9 w-32 font-mono"
             defaultValue={dias}
-            className="flex h-9 w-32 rounded-md border bg-transparent px-3 py-1 text-sm shadow-sm outline-none focus-visible:ring-1 focus-visible:ring-ring"
           />
         </div>
         <Button type="submit" variant="outline">
@@ -65,17 +66,19 @@ export default async function RelatorioClientesInativosPage({
         </Button>
       </form>
 
-      <Card>
+      <Card className="shadow-sm">
         <CardContent className="p-0">
           {inativos.length === 0 ? (
-            <div className="flex flex-col items-center gap-2 py-16 text-center text-muted-foreground">
-              <UserX className="h-8 w-8" />
-              <p>Nenhum cliente inativo nesse período.</p>
+            <div className="flex flex-col items-center gap-2 py-16 text-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-bg-sunken text-text-tertiary">
+                <UserX className="h-6 w-6" />
+              </div>
+              <p className="text-text-secondary">Nenhum cliente inativo nesse período.</p>
             </div>
           ) : (
             <Table>
               <TableHeader>
-                <TableRow>
+                <TableRow className="hover:bg-transparent">
                   <TableHead>Cliente</TableHead>
                   <TableHead>Telefone</TableHead>
                   <TableHead>Última atividade</TableHead>
@@ -84,7 +87,7 @@ export default async function RelatorioClientesInativosPage({
               <TableBody>
                 {inativos.map(({ cliente, ultimaAtividade }) => (
                   <TableRow key={cliente.id}>
-                    <TableCell className="font-medium">
+                    <TableCell className="font-medium text-text">
                       <Link
                         href={`/clientes/${cliente.id}`}
                         className="hover:underline"
@@ -92,8 +95,10 @@ export default async function RelatorioClientesInativosPage({
                         {cliente.nome}
                       </Link>
                     </TableCell>
-                    <TableCell>{cliente.telefone}</TableCell>
-                    <TableCell>
+                    <TableCell className="font-mono text-text-secondary">
+                      {cliente.telefone}
+                    </TableCell>
+                    <TableCell className="font-mono text-text-secondary">
                       {ultimaAtividade
                         ? ultimaAtividade.toLocaleDateString("pt-BR")
                         : "Nunca"}

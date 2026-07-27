@@ -26,25 +26,27 @@ export default async function VacinasPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-heading font-bold tracking-tight">
+        <h1 className="font-heading text-2xl font-semibold tracking-tight text-text">
           Vacinas
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-text-secondary">
           Vacinas aplicadas e próximas doses de todos os pets.
         </p>
       </div>
 
-      <Card>
+      <Card className="shadow-sm">
         <CardContent className="p-0">
           {vacinas.length === 0 ? (
-            <div className="flex flex-col items-center gap-2 py-16 text-center text-muted-foreground">
-              <Syringe className="h-8 w-8" />
-              <p>Nenhuma vacina registrada.</p>
+            <div className="flex flex-col items-center gap-2 py-16 text-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-bg-sunken text-text-tertiary">
+                <Syringe className="h-6 w-6" />
+              </div>
+              <p className="text-text-secondary">Nenhuma vacina registrada.</p>
             </div>
           ) : (
             <Table>
               <TableHeader>
-                <TableRow>
+                <TableRow className="hover:bg-transparent">
                   <TableHead>Pet</TableHead>
                   <TableHead>Tutor</TableHead>
                   <TableHead>Vacina</TableHead>
@@ -58,7 +60,7 @@ export default async function VacinasPage() {
                   const status = getStatusVacina(vacina.proximaDose);
                   return (
                     <TableRow key={vacina.id}>
-                      <TableCell className="font-medium">
+                      <TableCell className="font-medium text-text">
                         <Link
                           href={`/pets/${vacina.pet.id}`}
                           className="block hover:underline"
@@ -66,12 +68,16 @@ export default async function VacinasPage() {
                           {vacina.pet.nome}
                         </Link>
                       </TableCell>
-                      <TableCell>{vacina.pet.cliente.nome}</TableCell>
-                      <TableCell>{vacina.nome}</TableCell>
-                      <TableCell>
+                      <TableCell className="text-text-secondary">
+                        {vacina.pet.cliente.nome}
+                      </TableCell>
+                      <TableCell className="text-text-secondary">
+                        {vacina.nome}
+                      </TableCell>
+                      <TableCell className="font-mono text-text-secondary">
                         {vacina.dataAplicacao.toLocaleDateString("pt-BR")}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="font-mono text-text-secondary">
                         {vacina.proximaDose
                           ? vacina.proximaDose.toLocaleDateString("pt-BR")
                           : "—"}

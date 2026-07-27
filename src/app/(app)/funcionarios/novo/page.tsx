@@ -11,14 +11,14 @@ export default async function NovoFuncionarioPage() {
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div>
-        <h1 className="text-2xl font-heading font-bold tracking-tight">
+        <h1 className="font-heading text-2xl font-semibold tracking-tight text-text">
           Novo funcionário
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-text-secondary">
           Cadastre um novo usuário com acesso ao sistema.
         </p>
       </div>
-      <Card>
+      <Card className="shadow-sm">
         <CardHeader>
           <CardTitle>Dados do funcionário</CardTitle>
         </CardHeader>

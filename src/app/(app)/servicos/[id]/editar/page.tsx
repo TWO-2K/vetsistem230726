@@ -24,12 +24,12 @@ export default async function EditarServicoPage({
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div>
-        <h1 className="text-2xl font-heading font-bold tracking-tight">
+        <h1 className="font-heading text-2xl font-semibold tracking-tight text-text">
           Editar serviço
         </h1>
-        <p className="text-muted-foreground">{servico.nome}</p>
+        <p className="text-text-secondary">{servico.nome}</p>
       </div>
-      <Card>
+      <Card className="shadow-sm">
         <CardHeader>
           <CardTitle>Dados do serviço</CardTitle>
         </CardHeader>

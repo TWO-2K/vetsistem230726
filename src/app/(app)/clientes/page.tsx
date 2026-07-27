@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Plus, Users } from "lucide-react";
+import { Plus, Users, Search } from "lucide-react";
 
 export default async function ClientesPage({
   searchParams,
@@ -34,10 +34,12 @@ export default async function ClientesPage({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-heading font-bold tracking-tight">Clientes</h1>
-          <p className="text-muted-foreground">Tutores cadastrados na clínica.</p>
+          <h1 className="font-heading text-2xl font-semibold tracking-tight text-text">
+            Clientes
+          </h1>
+          <p className="text-text-secondary">Tutores cadastrados na clínica.</p>
         </div>
         <Button render={<Link href="/clientes/novo" />} nativeButton={false}>
           <Plus className="h-4 w-4" /> Novo cliente
@@ -45,26 +47,36 @@ export default async function ClientesPage({
       </div>
 
       <form className="max-w-sm">
-        <input
-          type="text"
-          name="q"
-          defaultValue={q}
-          placeholder="Buscar por nome..."
-          className="flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-sm outline-none focus-visible:ring-1 focus-visible:ring-ring"
-        />
+        <div className="flex h-9 items-center gap-2 rounded-lg border border-border bg-bg-elevated px-3 text-sm has-focus-within:border-ring has-focus-within:ring-3 has-focus-within:ring-ring/50">
+          <Search className="h-4 w-4 shrink-0 text-text-tertiary" />
+          <input
+            type="text"
+            name="q"
+            defaultValue={q}
+            placeholder="Buscar por nome..."
+            className="w-full bg-transparent outline-none placeholder:text-text-tertiary"
+          />
+        </div>
       </form>
 
-      <Card>
+      <Card className="shadow-sm">
         <CardContent className="p-0">
           {clientes.length === 0 ? (
-            <div className="flex flex-col items-center gap-2 py-16 text-center text-muted-foreground">
-              <Users className="h-8 w-8" />
-              <p>Nenhum cliente encontrado.</p>
+            <div className="flex flex-col items-center gap-2 py-16 text-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-bg-sunken text-text-tertiary">
+                <Users className="h-6 w-6" />
+              </div>
+              <p className="text-text-secondary">Nenhum cliente encontrado.</p>
+              <p className="text-sm text-text-tertiary">
+                {q
+                  ? "Tente buscar por outro nome."
+                  : "Cadastre o primeiro tutor da clínica."}
+              </p>
             </div>
           ) : (
             <Table>
               <TableHeader>
-                <TableRow>
+                <TableRow className="hover:bg-transparent">
                   <TableHead>Nome</TableHead>
                   <TableHead>Telefone</TableHead>
                   <TableHead>E-mail</TableHead>
@@ -74,7 +86,7 @@ export default async function ClientesPage({
               <TableBody>
                 {clientes.map((cliente) => (
                   <TableRow key={cliente.id} className="cursor-pointer">
-                    <TableCell className="font-medium">
+                    <TableCell className="font-medium text-text">
                       <Link
                         href={`/clientes/${cliente.id}`}
                         className="block hover:underline"
@@ -82,9 +94,15 @@ export default async function ClientesPage({
                         {cliente.nome}
                       </Link>
                     </TableCell>
-                    <TableCell>{cliente.telefone}</TableCell>
-                    <TableCell>{cliente.email || "—"}</TableCell>
-                    <TableCell>{cliente._count.pets}</TableCell>
+                    <TableCell className="font-mono text-text-secondary">
+                      {cliente.telefone}
+                    </TableCell>
+                    <TableCell className="text-text-secondary">
+                      {cliente.email || "—"}
+                    </TableCell>
+                    <TableCell className="text-text-secondary">
+                      {cliente._count.pets}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

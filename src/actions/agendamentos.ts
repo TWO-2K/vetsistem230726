@@ -6,7 +6,11 @@ import { requireSession } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 import { agendamentoSchema } from "@/lib/validations";
 import { StatusAgendamento } from "@/generated/prisma/client";
-import { assertClientePertenceAoTenant, assertPetPertenceAoTenant } from "@/lib/tenant-guard";
+import {
+  assertClientePertenceAoTenant,
+  assertPetPertenceAoTenant,
+  assertUsuarioPertenceAoTenant,
+} from "@/lib/tenant-guard";
 
 export async function assertDentroDoExpediente(tenantId: string, dataHora: Date) {
   const empresa = await prisma.tenant.findUniqueOrThrow({
@@ -82,11 +86,7 @@ export async function criarAgendamento(
   await assertClientePertenceAoTenant(dados.clienteId, session.user.tenantId);
   await assertPetPertenceAoTenant(dados.petId, session.user.tenantId);
   await assertDentroDoExpediente(session.user.tenantId, new Date(dados.dataHora));
-
-  const veterinario = await prisma.usuario.findUnique({
-    where: { id: dados.usuarioId, tenantId: session.user.tenantId },
-  });
-  if (!veterinario) throw new Error("Veterinário inválido");
+  await assertUsuarioPertenceAoTenant(dados.usuarioId, session.user.tenantId);
 
   const { conflitoVeterinario, conflitoClientePet } =
     await buscarConflitosAgendamento(

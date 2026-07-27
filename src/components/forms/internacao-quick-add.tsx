@@ -20,14 +20,21 @@ export function InternacaoQuickAdd({ petId }: { petId: string }) {
   }
 
   return (
-    <form action={criarInternacao} className="space-y-3 rounded-lg border bg-muted/30 p-4">
+    <form
+      action={criarInternacao}
+      className="space-y-3 rounded-lg border border-border bg-bg-sunken p-4"
+    >
       <input type="hidden" name="petId" value={petId} />
       <div className="space-y-2">
-        <Label htmlFor="motivo">Motivo *</Label>
+        <Label htmlFor="motivo" className="text-text-secondary">
+          Motivo <span className="text-danger">*</span>
+        </Label>
         <Input id="motivo" name="motivo" required />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="observacoes">Observações</Label>
+        <Label htmlFor="observacoes" className="text-text-secondary">
+          Observações
+        </Label>
         <Textarea id="observacoes" name="observacoes" rows={2} />
       </div>
       <div className="flex justify-end gap-2">

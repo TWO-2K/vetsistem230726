@@ -27,10 +27,10 @@ export default async function ServicosPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-heading font-bold tracking-tight">Serviços</h1>
-          <p className="text-muted-foreground">
+          <h1 className="font-heading text-2xl font-semibold tracking-tight text-text">Serviços</h1>
+          <p className="text-text-secondary">
             Catálogo de serviços com preço padrão e comissão.
           </p>
         </div>
@@ -39,17 +39,19 @@ export default async function ServicosPage() {
         </Button>
       </div>
 
-      <Card>
+      <Card className="shadow-sm">
         <CardContent className="p-0">
           {servicos.length === 0 ? (
-            <div className="flex flex-col items-center gap-2 py-16 text-center text-muted-foreground">
-              <Scissors className="h-8 w-8" />
-              <p>Nenhum serviço cadastrado.</p>
+            <div className="flex flex-col items-center gap-2 py-16 text-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-bg-sunken text-text-tertiary">
+                <Scissors className="h-6 w-6" />
+              </div>
+              <p className="text-text-secondary">Nenhum serviço cadastrado.</p>
             </div>
           ) : (
             <Table>
               <TableHeader>
-                <TableRow>
+                <TableRow className="hover:bg-transparent">
                   <TableHead>Serviço</TableHead>
                   <TableHead>Preço padrão</TableHead>
                   <TableHead>Comissão</TableHead>
@@ -59,7 +61,7 @@ export default async function ServicosPage() {
               <TableBody>
                 {servicos.map((servico) => (
                   <TableRow key={servico.id}>
-                    <TableCell className="font-medium">
+                    <TableCell className="font-medium text-text">
                       <Link
                         href={`/servicos/${servico.id}/editar`}
                         className="hover:underline"
@@ -67,11 +69,15 @@ export default async function ServicosPage() {
                         {servico.nome}
                       </Link>
                     </TableCell>
-                    <TableCell>R$ {servico.precoPadrao.toFixed(2)}</TableCell>
-                    <TableCell>{servico.percentualComissao.toFixed(1)}%</TableCell>
+                    <TableCell className="font-mono text-text-secondary">
+                      R$ {servico.precoPadrao.toFixed(2)}
+                    </TableCell>
+                    <TableCell className="font-mono text-text-secondary">
+                      {servico.percentualComissao.toFixed(1)}%
+                    </TableCell>
                     <TableCell className="flex items-center justify-end gap-2">
                       {!servico.ativo && (
-                        <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">
+                        <span className="rounded-full bg-bg-sunken px-2.5 py-1 text-xs font-medium text-text-secondary">
                           Inativo
                         </span>
                       )}

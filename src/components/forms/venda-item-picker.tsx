@@ -131,8 +131,16 @@ export function VendaItemPicker({
   return (
     <div className="space-y-2">
       <input type="hidden" name="itensVenda" value={serializado} />
+      {linhas.length === 0 && (
+        <p className="rounded-lg border border-dashed border-border py-6 text-center text-sm text-text-tertiary">
+          Nenhum item adicionado ainda.
+        </p>
+      )}
       {linhas.map((linha) => (
-        <div key={linha.chave} className="flex items-center gap-2">
+        <div
+          key={linha.chave}
+          className="flex items-center gap-2 rounded-lg border border-border bg-bg-sunken/40 p-2"
+        >
           {linha.tipo === "produto" ? (
             <>
               <Select
@@ -155,7 +163,7 @@ export function VendaItemPicker({
                 type="number"
                 min="0"
                 step="0.01"
-                className="w-24"
+                className="w-24 font-mono"
                 value={linha.quantidade}
                 onChange={(e) => atualizarLinha(linha.chave, { quantidade: e.target.value })}
               />
@@ -202,13 +210,13 @@ export function VendaItemPicker({
             type="number"
             min="0"
             step="0.01"
-            className="w-28"
+            className="w-28 font-mono"
             value={linha.precoUnitario}
             onChange={(e) =>
               atualizarLinha(linha.chave, { precoUnitario: e.target.value })
             }
           />
-          <span className="w-28 text-right text-sm text-muted-foreground">
+          <span className="w-28 text-right font-mono text-sm text-text-secondary">
             {(
               (linha.tipo === "produto" ? Number(linha.quantidade || 0) : 1) *
               Number(linha.precoUnitario || 0)
@@ -220,7 +228,7 @@ export function VendaItemPicker({
             size="icon"
             onClick={() => removerLinha(linha.chave)}
           >
-            <Trash2 className="h-4 w-4" />
+            <Trash2 className="h-4 w-4 text-danger" />
           </Button>
         </div>
       ))}
@@ -232,8 +240,10 @@ export function VendaItemPicker({
           <Plus className="h-4 w-4" /> Adicionar serviço
         </Button>
       </div>
-      <div className="flex justify-end pt-2 text-lg font-bold">
-        Total: {total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+      <div className="flex justify-end border-t border-border pt-3">
+        <p className="font-mono text-xl font-semibold tracking-tight text-text">
+          Total: {total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+        </p>
       </div>
     </div>
   );

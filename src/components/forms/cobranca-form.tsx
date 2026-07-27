@@ -57,7 +57,9 @@ export function CobrancaForm({
     <form action={action} className="space-y-4">
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="clienteId">Cliente *</Label>
+          <Label htmlFor="clienteId" className="text-text-secondary">
+            Cliente <span className="text-danger">*</span>
+          </Label>
           <Select
             name="clienteId"
             items={clienteItems}
@@ -77,7 +79,9 @@ export function CobrancaForm({
           </Select>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="petId">Pet</Label>
+          <Label htmlFor="petId" className="text-text-secondary">
+            Pet
+          </Label>
           <Select
             name="petId"
             items={petItems}
@@ -99,7 +103,9 @@ export function CobrancaForm({
           </Select>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="descricao">Descrição *</Label>
+          <Label htmlFor="descricao" className="text-text-secondary">
+            Descrição <span className="text-danger">*</span>
+          </Label>
           <Input
             id="descricao"
             name="descricao"
@@ -108,24 +114,36 @@ export function CobrancaForm({
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="valor">Valor (R$) *</Label>
+          <Label htmlFor="valor" className="text-text-secondary">
+            Valor (R$) <span className="text-danger">*</span>
+          </Label>
           <Input
             id="valor"
             name="valor"
             type="number"
             step="0.01"
             min="0"
+            className="font-mono"
             defaultValue={precoPadraoSelecionado}
             key={precoPadraoSelecionado}
             required
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="dataVencimento">Vencimento</Label>
-          <Input id="dataVencimento" name="dataVencimento" type="date" />
+          <Label htmlFor="dataVencimento" className="text-text-secondary">
+            Vencimento
+          </Label>
+          <Input
+            id="dataVencimento"
+            name="dataVencimento"
+            type="date"
+            className="font-mono"
+          />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="servicoId">Serviço realizado</Label>
+          <Label htmlFor="servicoId" className="text-text-secondary">
+            Serviço realizado
+          </Label>
           <Select
             name="servicoId"
             items={servicoItems}
@@ -145,7 +163,9 @@ export function CobrancaForm({
           </Select>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="profissionalId">Profissional</Label>
+          <Label htmlFor="profissionalId" className="text-text-secondary">
+            Profissional
+          </Label>
           <Select name="profissionalId" items={profissionalItems} disabled={!servicoId}>
             <SelectTrigger id="profissionalId" className="w-full">
               <SelectValue
@@ -162,11 +182,13 @@ export function CobrancaForm({
           </Select>
         </div>
         <div className="space-y-2 sm:col-span-2">
-          <Label htmlFor="observacoes">Observações</Label>
+          <Label htmlFor="observacoes" className="text-text-secondary">
+            Observações
+          </Label>
           <Textarea id="observacoes" name="observacoes" />
         </div>
       </div>
-      <div className="flex justify-end">
+      <div className="flex justify-end gap-2 border-t border-border pt-4">
         <Button type="submit">Lançar cobrança</Button>
       </div>
     </form>

@@ -12,10 +12,12 @@ export default async function NovoProdutoPage() {
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div>
-        <h1 className="text-2xl font-heading font-bold tracking-tight">Novo produto</h1>
-        <p className="text-muted-foreground">Cadastre um novo produto ou insumo.</p>
+        <h1 className="font-heading text-2xl font-semibold tracking-tight text-text">
+          Novo produto
+        </h1>
+        <p className="text-text-secondary">Cadastre um novo produto ou insumo.</p>
       </div>
-      <Card>
+      <Card className="shadow-sm">
         <CardHeader>
           <CardTitle>Dados do produto</CardTitle>
         </CardHeader>

@@ -34,12 +34,14 @@ export function MovimentoEstoqueQuickAdd({ produtoId }: { produtoId: string }) {
   return (
     <form
       action={registrarMovimentoEstoque}
-      className="space-y-3 rounded-lg border bg-muted/30 p-4"
+      className="space-y-3 rounded-lg border border-border bg-bg-sunken p-4"
     >
       <input type="hidden" name="produtoId" value={produtoId} />
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="tipo">Tipo *</Label>
+          <Label htmlFor="tipo" className="text-text-secondary">
+            Tipo <span className="text-danger">*</span>
+          </Label>
           <Select
             name="tipo"
             items={TIPO_MOVIMENTO_LABEL}
@@ -61,8 +63,13 @@ export function MovimentoEstoqueQuickAdd({ produtoId }: { produtoId: string }) {
           </Select>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="quantidade">
-            Quantidade {tipo === "AJUSTE" ? "(use negativo para reduzir)" : "*"}
+          <Label htmlFor="quantidade" className="text-text-secondary">
+            Quantidade{" "}
+            {tipo === "AJUSTE" ? (
+              "(use negativo para reduzir)"
+            ) : (
+              <span className="text-danger">*</span>
+            )}
           </Label>
           <Input
             id="quantidade"
@@ -70,12 +77,15 @@ export function MovimentoEstoqueQuickAdd({ produtoId }: { produtoId: string }) {
             type="number"
             step="0.01"
             min={tipo === "AJUSTE" ? undefined : "0"}
+            className="font-mono"
             required
           />
         </div>
       </div>
       <div className="space-y-2">
-        <Label htmlFor="observacoes">Observações</Label>
+        <Label htmlFor="observacoes" className="text-text-secondary">
+          Observações
+        </Label>
         <Textarea id="observacoes" name="observacoes" rows={2} />
       </div>
       <div className="flex justify-end gap-2">

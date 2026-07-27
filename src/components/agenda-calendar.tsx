@@ -367,10 +367,7 @@ export function AgendaCalendar({
             </Link>
           </div>
         </div>
-        <Button
-          className="rounded-full bg-emerald-600 text-white hover:bg-emerald-700"
-          onClick={() => abrirNovo(referencia)}
-        >
+        <Button className="rounded-full" onClick={() => abrirNovo(referencia)}>
           <Plus className="h-4 w-4" /> Novo agendamento
         </Button>
       </div>
@@ -399,7 +396,7 @@ export function AgendaCalendar({
                   <span
                     className={cn(
                       "text-xs text-muted-foreground",
-                      ehHoje && "font-semibold text-emerald-600"
+                      ehHoje && "font-semibold text-primary"
                     )}
                   >
                     {toISODateOnly(dia).slice(8, 10)}/
