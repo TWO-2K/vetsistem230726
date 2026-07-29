@@ -85,7 +85,7 @@ export function NavSidebar({
       {grupos.map((grupo) => (
         <div key={grupo.label} className="flex flex-col gap-1">
           {!collapsed && (
-            <p className="px-3 text-xs font-medium tracking-wide text-text-tertiary uppercase">
+            <p className="px-3 text-xs font-medium tracking-wide text-sidebar-foreground/60 uppercase">
               {grupo.label}
             </p>
           )}
@@ -101,8 +101,8 @@ export function NavSidebar({
                   "relative flex items-center gap-3 rounded-md py-2.5 pr-3 pl-3 text-sm font-medium transition-colors before:absolute before:inset-y-1 before:left-0 before:w-0.75 before:rounded-full before:bg-transparent before:content-['']",
                   collapsed && "mx-auto w-9 justify-center px-0",
                   active
-                    ? "bg-primary-subtle text-primary before:bg-primary"
-                    : "text-text-secondary hover:bg-bg-sunken hover:text-text"
+                    ? "bg-sidebar-accent text-sidebar-accent-foreground before:bg-sidebar-accent-foreground"
+                    : "text-sidebar-foreground/75 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                 )}
               >
                 <Icon className="h-[18px] w-[18px] shrink-0" />
@@ -116,7 +116,15 @@ export function NavSidebar({
   );
 }
 
-export function BrandMark({ collapsed = false }: { collapsed?: boolean }) {
+export function BrandMark({
+  collapsed = false,
+  iconClassName = "bg-primary text-primary-foreground",
+  textClassName = "text-text",
+}: {
+  collapsed?: boolean;
+  iconClassName?: string;
+  textClassName?: string;
+}) {
   return (
     <div
       className={cn(
@@ -124,11 +132,21 @@ export function BrandMark({ collapsed = false }: { collapsed?: boolean }) {
         collapsed && "justify-center"
       )}
     >
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+      <div
+        className={cn(
+          "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg",
+          iconClassName
+        )}
+      >
         <PawPrint className="h-[18px] w-[18px]" />
       </div>
       {!collapsed && (
-        <span className="font-heading text-xl font-semibold tracking-tight text-text">
+        <span
+          className={cn(
+            "font-heading text-xl font-semibold tracking-tight",
+            textClassName
+          )}
+        >
           VetSistema
         </span>
       )}

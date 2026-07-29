@@ -51,23 +51,27 @@ export function AppShell({
     <div className="flex min-h-screen flex-1 bg-bg">
       <aside
         className={cn(
-          "sticky top-0 hidden h-screen flex-col border-r border-border bg-bg-elevated pb-4 transition-[width] duration-200 md:flex",
+          "sticky top-0 hidden h-screen flex-col border-r border-sidebar-border bg-sidebar pb-4 transition-[width] duration-200 md:flex",
           collapsed ? "w-20" : "w-64"
         )}
       >
         <div
           className={cn(
-            "flex h-16 shrink-0 items-center border-b border-border px-3",
+            "flex h-16 shrink-0 items-center border-b border-sidebar-border px-3",
             collapsed && "justify-center"
           )}
         >
-          <BrandMark collapsed={collapsed} />
+          <BrandMark
+            collapsed={collapsed}
+            iconClassName="bg-sidebar-primary text-sidebar-primary-foreground"
+            textClassName="text-sidebar-foreground"
+          />
         </div>
         <button
           type="button"
           aria-label={collapsed ? "Expandir menu" : "Recolher menu"}
           onClick={toggle}
-          className="absolute top-8 right-0 z-10 flex h-6 w-6 -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full border border-border bg-bg-elevated text-text-tertiary shadow-sm transition-colors hover:bg-bg-sunken hover:text-text"
+          className="absolute top-8 right-0 z-10 flex h-6 w-6 -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full border border-sidebar-border bg-sidebar text-sidebar-foreground/70 shadow-sm transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
         >
           {collapsed ? (
             <PanelLeftOpen className="h-3.5 w-3.5" />
@@ -78,7 +82,7 @@ export function AppShell({
         <div className="mt-4 flex-1">
           <NavSidebar papel={papel} collapsed={collapsed} />
         </div>
-        <div className="border-t border-border px-3 pt-4">
+        <div className="border-t border-sidebar-border px-3 pt-4">
           <div
             className={cn(
               "flex items-center gap-3 rounded-md px-1 py-1",
@@ -90,8 +94,8 @@ export function AppShell({
             </Avatar>
             {!collapsed && (
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium text-text">{nome}</p>
-                <p className="truncate text-xs text-text-tertiary">{email}</p>
+                <p className="truncate text-sm font-medium text-sidebar-foreground">{nome}</p>
+                <p className="truncate text-xs text-sidebar-foreground/60">{email}</p>
               </div>
             )}
           </div>
@@ -102,7 +106,7 @@ export function AppShell({
               size="sm"
               title={collapsed ? "Sair" : undefined}
               className={cn(
-                "mt-2 w-full text-text-secondary",
+                "mt-2 w-full text-sidebar-foreground/85 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                 collapsed ? "justify-center" : "justify-start"
               )}
             >

@@ -51,7 +51,7 @@ export default async function LoginPage({
   return (
     <div className="grid min-h-screen lg:grid-cols-2">
       {/* Painel de marca — escondido em telas pequenas */}
-      <div className="relative hidden overflow-hidden bg-gradient-to-br from-emerald-700 via-emerald-600 to-teal-700 lg:flex lg:flex-col lg:justify-between lg:p-12">
+      <div className="relative hidden overflow-hidden bg-gradient-to-br from-primary via-primary to-primary-hover lg:flex lg:flex-col lg:justify-between lg:p-12">
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.08]"
           style={{
@@ -61,7 +61,7 @@ export default async function LoginPage({
           }}
         />
         <div className="pointer-events-none absolute -right-24 -top-24 h-96 w-96 rounded-full bg-white/10 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-32 -left-16 h-96 w-96 rounded-full bg-emerald-900/30 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-32 -left-16 h-96 w-96 rounded-full bg-primary-hover/40 blur-3xl" />
 
         <div className="relative z-10 flex items-center gap-3">
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/15 backdrop-blur-sm ring-1 ring-white/20">
@@ -76,7 +76,7 @@ export default async function LoginPage({
           <h1 className="font-heading text-3xl font-bold leading-tight text-white text-balance">
             Cuidado veterinário, gestão sem complicação.
           </h1>
-          <p className="text-emerald-50/90 text-balance">
+          <p className="text-white/90 text-balance">
             Prontuários, agenda, internação, vacinas, financeiro e estoque da
             sua clínica em um só lugar.
           </p>
@@ -92,7 +92,7 @@ export default async function LoginPage({
                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/15 backdrop-blur-sm">
                   <Icon className="h-4 w-4" />
                 </div>
-                <span className="text-sm font-medium text-emerald-50">
+                <span className="text-sm font-medium text-white">
                   {texto}
                 </span>
               </li>
@@ -100,7 +100,7 @@ export default async function LoginPage({
           </ul>
         </div>
 
-        <p className="relative z-10 text-xs text-emerald-100/70">
+        <p className="relative z-10 text-xs text-white/70">
           © {new Date().getFullYear()} VetSistema. Feito para clínicas
           veterinárias.
         </p>
@@ -156,7 +156,7 @@ export default async function LoginPage({
                 {mensagemErro}
               </p>
             )}
-            <Button type="submit" className="h-10 w-full bg-emerald-700 hover:bg-emerald-800">
+            <Button type="submit" className="h-10 w-full">
               Entrar
             </Button>
           </form>
