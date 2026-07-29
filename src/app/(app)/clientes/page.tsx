@@ -36,10 +36,10 @@ export default async function ClientesPage({
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="font-heading text-2xl font-semibold tracking-tight text-text">
+          <h1 className="font-heading text-3xl font-bold tracking-tight text-text">
             Clientes
           </h1>
-          <p className="text-text-secondary">Tutores cadastrados na clínica.</p>
+          <p className="text-sm text-text-secondary">Tutores cadastrados na clínica.</p>
         </div>
         <Button render={<Link href="/clientes/novo" />} nativeButton={false}>
           <Plus className="h-4 w-4" /> Novo cliente

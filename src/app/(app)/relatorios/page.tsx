@@ -33,10 +33,10 @@ export default async function RelatoriosPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-heading text-2xl font-semibold tracking-tight text-text">
+        <h1 className="font-heading text-3xl font-bold tracking-tight text-text">
           Relatórios
         </h1>
-        <p className="text-text-secondary">
+        <p className="text-sm text-text-secondary">
           Visão agregada do financeiro, atendimentos e clientes da clínica.
         </p>
       </div>

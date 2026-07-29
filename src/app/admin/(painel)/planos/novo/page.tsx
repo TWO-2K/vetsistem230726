@@ -12,10 +12,10 @@ export default async function NovoPlanoPage() {
   return (
     <div className="max-w-xl space-y-6">
       <div>
-        <h1 className="text-2xl font-heading font-bold tracking-tight">
+        <h1 className="text-3xl font-heading font-bold tracking-tight">
           Novo plano
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-sm text-muted-foreground">
           Só informativo — sem cobrança automática nesta fase.
         </p>
       </div>

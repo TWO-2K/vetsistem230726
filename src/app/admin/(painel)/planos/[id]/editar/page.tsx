@@ -22,7 +22,7 @@ export default async function EditarPlanoPage({
   return (
     <div className="max-w-xl space-y-6">
       <div>
-        <h1 className="text-2xl font-heading font-bold tracking-tight">
+        <h1 className="text-3xl font-heading font-bold tracking-tight">
           Editar plano
         </h1>
       </div>

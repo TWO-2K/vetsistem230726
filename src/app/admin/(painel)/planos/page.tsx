@@ -26,10 +26,10 @@ export default async function PlanosPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-heading font-bold tracking-tight">
+          <h1 className="text-3xl font-heading font-bold tracking-tight">
             Planos
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             Planos de referência oferecidos às empresas.
           </p>
         </div>

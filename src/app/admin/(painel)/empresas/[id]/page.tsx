@@ -53,7 +53,7 @@ export default async function EmpresaDetalhePage({
     <div className="max-w-2xl space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-heading font-bold tracking-tight">
+          <h1 className="text-3xl font-heading font-bold tracking-tight">
             {tenant.nome}
           </h1>
           <span

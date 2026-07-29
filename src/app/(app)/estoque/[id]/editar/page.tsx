@@ -24,10 +24,10 @@ export default async function EditarProdutoPage({
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div>
-        <h1 className="font-heading text-2xl font-semibold tracking-tight text-text">
+        <h1 className="font-heading text-3xl font-bold tracking-tight text-text">
           Editar produto
         </h1>
-        <p className="text-text-secondary">{produto.nome}</p>
+        <p className="text-sm text-text-secondary">{produto.nome}</p>
       </div>
       <Card className="shadow-sm">
         <CardHeader>

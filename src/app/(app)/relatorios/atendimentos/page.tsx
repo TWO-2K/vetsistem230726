@@ -67,10 +67,10 @@ export default async function RelatorioAtendimentosPage({
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="font-heading text-2xl font-semibold tracking-tight text-text">
+          <h1 className="font-heading text-3xl font-bold tracking-tight text-text">
             Atendimentos por período
           </h1>
-          <p className="text-text-secondary">
+          <p className="text-sm text-text-secondary">
             Prontuários registrados no intervalo selecionado.
           </p>
         </div>

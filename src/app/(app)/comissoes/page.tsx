@@ -48,8 +48,8 @@ export default async function ComissoesPage({
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-heading text-2xl font-semibold tracking-tight text-text">Comissões</h1>
-        <p className="text-text-secondary">
+        <h1 className="font-heading text-3xl font-bold tracking-tight text-text">Comissões</h1>
+        <p className="text-sm text-text-secondary">
           {somenteProprio
             ? "Sua comissão sobre serviços realizados e já pagos pelo cliente."
             : "Comissão por profissional sobre serviços já pagos pelo cliente."}

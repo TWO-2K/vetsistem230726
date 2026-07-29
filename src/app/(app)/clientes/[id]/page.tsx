@@ -33,7 +33,7 @@ export default async function ClienteDetalhePage({
             <User className="h-6 w-6" />
           </div>
           <div className="space-y-1">
-            <h1 className="font-heading text-2xl font-semibold tracking-tight text-text">
+            <h1 className="font-heading text-3xl font-bold tracking-tight text-text">
               {cliente.nome}
             </h1>
             <p className="font-mono text-sm text-text-secondary">

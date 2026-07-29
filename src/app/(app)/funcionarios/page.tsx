@@ -87,10 +87,10 @@ export default async function FuncionariosPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="font-heading text-2xl font-semibold tracking-tight text-text">
+          <h1 className="font-heading text-3xl font-bold tracking-tight text-text">
             Funcionários
           </h1>
-          <p className="text-text-secondary">Usuários com acesso ao sistema.</p>
+          <p className="text-sm text-text-secondary">Usuários com acesso ao sistema.</p>
         </div>
         <Button render={<Link href="/funcionarios/novo" />} nativeButton={false}>
           <Plus className="h-4 w-4" /> Novo funcionário

@@ -23,10 +23,10 @@ export default async function EditarFuncionarioPage({
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div>
-        <h1 className="font-heading text-2xl font-semibold tracking-tight text-text">
+        <h1 className="font-heading text-3xl font-bold tracking-tight text-text">
           Editar funcionário
         </h1>
-        <p className="text-text-secondary">{funcionario.nome}</p>
+        <p className="text-sm text-text-secondary">{funcionario.nome}</p>
       </div>
       <Card className="shadow-sm">
         <CardHeader>

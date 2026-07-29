@@ -22,10 +22,10 @@ export default async function NovaEmpresaPage() {
   return (
     <div className="max-w-xl space-y-6">
       <div>
-        <h1 className="text-2xl font-heading font-bold tracking-tight">
+        <h1 className="text-3xl font-heading font-bold tracking-tight">
           Nova empresa
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-sm text-muted-foreground">
           Cadastre a clínica e o usuário administrador inicial.
         </p>
       </div>

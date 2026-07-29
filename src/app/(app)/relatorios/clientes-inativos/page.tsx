@@ -35,10 +35,10 @@ export default async function RelatorioClientesInativosPage({
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="font-heading text-2xl font-semibold tracking-tight text-text">
+          <h1 className="font-heading text-3xl font-bold tracking-tight text-text">
             Clientes inativos
           </h1>
-          <p className="text-text-secondary">
+          <p className="text-sm text-text-secondary">
             Sem atendimento ou agendamento nos últimos {dias} dias.
           </p>
         </div>

@@ -26,10 +26,10 @@ export default async function VacinasPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-heading text-2xl font-semibold tracking-tight text-text">
+        <h1 className="font-heading text-3xl font-bold tracking-tight text-text">
           Vacinas
         </h1>
-        <p className="text-text-secondary">
+        <p className="text-sm text-text-secondary">
           Vacinas aplicadas e próximas doses de todos os pets.
         </p>
       </div>
