@@ -53,7 +53,13 @@ const grupoGestao: NavItem[] = [
   { href: "/empresa", label: "Minha Empresa", icon: Building2 },
 ];
 
-export function NavSidebar({ papel }: { papel: string }) {
+export function NavSidebar({
+  papel,
+  collapsed = false,
+}: {
+  papel: string;
+  collapsed?: boolean;
+}) {
   const pathname = usePathname();
 
   const podeVendas = papel === "ADMIN" || papel === "RECEPCAO";
@@ -78,9 +84,11 @@ export function NavSidebar({ papel }: { papel: string }) {
     <nav className="flex flex-col gap-5 px-3">
       {grupos.map((grupo) => (
         <div key={grupo.label} className="flex flex-col gap-1">
-          <p className="px-3 text-xs font-medium tracking-wide text-text-tertiary uppercase">
-            {grupo.label}
-          </p>
+          {!collapsed && (
+            <p className="px-3 text-xs font-medium tracking-wide text-text-tertiary uppercase">
+              {grupo.label}
+            </p>
+          )}
           {grupo.items.map(({ href, label, icon: Icon }) => {
             const active =
               pathname === href || pathname.startsWith(href + "/");
@@ -88,15 +96,17 @@ export function NavSidebar({ papel }: { papel: string }) {
               <Link
                 key={href}
                 href={href}
+                title={collapsed ? label : undefined}
                 className={cn(
-                  "relative flex items-center gap-3 rounded-md py-2 pr-3 pl-3 text-sm font-medium transition-colors before:absolute before:inset-y-1 before:left-0 before:w-0.75 before:rounded-full before:bg-transparent before:content-['']",
+                  "relative flex items-center gap-3 rounded-md py-2.5 pr-3 pl-3 text-sm font-medium transition-colors before:absolute before:inset-y-1 before:left-0 before:w-0.75 before:rounded-full before:bg-transparent before:content-['']",
+                  collapsed && "mx-auto w-9 justify-center px-0",
                   active
                     ? "bg-primary-subtle text-primary before:bg-primary"
                     : "text-text-secondary hover:bg-bg-sunken hover:text-text"
                 )}
               >
-                <Icon className="h-4 w-4 shrink-0" />
-                {label}
+                <Icon className="h-[18px] w-[18px] shrink-0" />
+                {!collapsed && label}
               </Link>
             );
           })}
@@ -106,15 +116,22 @@ export function NavSidebar({ papel }: { papel: string }) {
   );
 }
 
-export function BrandMark() {
+export function BrandMark({ collapsed = false }: { collapsed?: boolean }) {
   return (
-    <div className="flex items-center gap-2.5 px-3 py-2">
-      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-        <PawPrint className="h-4 w-4" />
+    <div
+      className={cn(
+        "flex items-center gap-2.5",
+        collapsed && "justify-center"
+      )}
+    >
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+        <PawPrint className="h-[18px] w-[18px]" />
       </div>
-      <span className="font-heading text-lg font-semibold tracking-tight text-text">
-        VetSistema
-      </span>
+      {!collapsed && (
+        <span className="font-heading text-xl font-semibold tracking-tight text-text">
+          VetSistema
+        </span>
+      )}
     </div>
   );
 }

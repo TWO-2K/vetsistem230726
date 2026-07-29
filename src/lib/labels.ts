@@ -45,6 +45,16 @@ export const STATUS_COLOR: Record<StatusAgendamento, string> = {
   CANCELADO: "bg-danger-subtle text-danger",
 };
 
+// Cor da borda esquerda dos chips de agendamento (padrão do mockup: border-left
+// sólida na cor do status, junto de STATUS_COLOR pro fundo/texto).
+export const STATUS_BORDER: Record<StatusAgendamento, string> = {
+  AGENDADO: "border-l-info",
+  CONFIRMADO: "border-l-warning",
+  EM_ATENDIMENTO: "border-l-success",
+  CONCLUIDO: "border-l-text-secondary",
+  CANCELADO: "border-l-danger",
+};
+
 export const TIPO_PRONTUARIO_LABEL: Record<TipoProntuario, string> = {
   CONSULTA: "Consulta",
   RETORNO: "Retorno",

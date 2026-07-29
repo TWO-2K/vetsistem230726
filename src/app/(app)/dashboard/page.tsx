@@ -3,21 +3,20 @@ import { requireSession } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Users, PawPrint, CalendarDays, Plus, Syringe, Wallet, Package } from "lucide-react";
+import { Users, PawPrint, CalendarDays, Plus, Syringe, AlertTriangle } from "lucide-react";
 import {
-  STATUS_LABEL,
   STATUS_COLOR,
+  STATUS_BORDER,
   STATUS_VACINA_LABEL,
   STATUS_VACINA_COLOR,
   getStatusVacina,
 } from "@/lib/labels";
-import { podeGerenciarFinanceiro, podeGerenciarEstoque } from "@/lib/rbac";
+import { podeGerenciarEstoque } from "@/lib/rbac";
 import { cn } from "@/lib/utils";
 
 export default async function DashboardPage() {
   const session = await requireSession();
   const tenantId = session.user.tenantId;
-  const podeFinanceiro = podeGerenciarFinanceiro(session.user.papel);
   const podeEstoque = podeGerenciarEstoque(session.user.papel);
 
   const inicioHoje = new Date();
@@ -29,7 +28,7 @@ export default async function DashboardPage() {
   em7Dias.setDate(em7Dias.getDate() + 7);
   em7Dias.setHours(23, 59, 59, 999);
 
-  const [totalClientes, totalPets, agendamentosHoje, vacinasAVencer, cobrancasPendentes, produtosAtivos] =
+  const [totalClientes, totalPets, agendamentosHoje, vacinasAVencer, produtosAtivos] =
     await Promise.all([
       prisma.cliente.count({ where: { tenantId } }),
       prisma.pet.count({ where: { tenantId } }),
@@ -43,15 +42,11 @@ export default async function DashboardPage() {
         include: { pet: { include: { cliente: true } } },
         orderBy: { proximaDose: "asc" },
       }),
-      podeFinanceiro
-        ? prisma.cobranca.findMany({ where: { tenantId, status: "PENDENTE" } })
-        : Promise.resolve([]),
       podeEstoque
         ? prisma.produto.findMany({ where: { tenantId, ativo: true } })
         : Promise.resolve([]),
     ]);
 
-  const totalPendente = cobrancasPendentes.reduce((soma, c) => soma + c.valor, 0);
   const produtosBaixoEstoque = produtosAtivos.filter(
     (p) => p.quantidadeAtual < p.quantidadeMinima
   );
@@ -61,44 +56,24 @@ export default async function DashboardPage() {
     value: string;
     icon: typeof Users;
     tone: "primary" | "accent" | "info" | "warning" | "danger";
+    href: string;
   }> = [
-    { label: "Clientes", value: String(totalClientes), icon: Users, tone: "primary" },
-    { label: "Pets", value: String(totalPets), icon: PawPrint, tone: "info" },
+    { label: "Clientes", value: String(totalClientes), icon: Users, tone: "primary", href: "/clientes" },
+    { label: "Pets", value: String(totalPets), icon: PawPrint, tone: "info", href: "/pets" },
     {
       label: "Atendimentos hoje",
       value: String(agendamentosHoje.length),
       icon: CalendarDays,
       tone: "primary",
+      href: "/agenda",
     },
     {
       label: "Vacinas a vencer",
       value: String(vacinasAVencer.length),
       icon: Syringe,
       tone: "warning",
+      href: "/vacinas",
     },
-    ...(podeFinanceiro
-      ? [
-          {
-            label: "A receber",
-            value: totalPendente.toLocaleString("pt-BR", {
-              style: "currency",
-              currency: "BRL",
-            }),
-            icon: Wallet,
-            tone: "accent" as const,
-          },
-        ]
-      : []),
-    ...(podeEstoque
-      ? [
-          {
-            label: "Estoque baixo",
-            value: String(produtosBaixoEstoque.length),
-            icon: Package,
-            tone: "danger" as const,
-          },
-        ]
-      : []),
   ];
 
   const toneClasses: Record<
@@ -135,31 +110,33 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {kpis.map((kpi) => (
-          <Card key={kpi.label} className="shadow-sm">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-text-secondary">
-                {kpi.label}
-              </CardTitle>
-              <div
-                className={cn(
-                  "flex h-8 w-8 items-center justify-center rounded-full",
-                  toneClasses[kpi.tone]
-                )}
-              >
-                <kpi.icon className="h-4 w-4" />
-              </div>
-            </CardHeader>
-            <CardContent className="font-display text-3xl font-semibold tracking-tight text-text">
-              {kpi.value}
-            </CardContent>
-          </Card>
+          <Link key={kpi.label} href={kpi.href} className="block">
+            <Card className="shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium text-text-secondary">
+                  {kpi.label}
+                </CardTitle>
+                <div
+                  className={cn(
+                    "flex h-8 w-8 items-center justify-center rounded-full",
+                    toneClasses[kpi.tone]
+                  )}
+                >
+                  <kpi.icon className="h-4 w-4" />
+                </div>
+              </CardHeader>
+              <CardContent className="font-display text-3xl font-semibold tracking-tight text-text">
+                {kpi.value}
+              </CardContent>
+            </Card>
+          </Link>
         ))}
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        <Card className="shadow-sm">
+      <div className="grid gap-4 lg:grid-cols-3">
+        <Card className="shadow-sm lg:col-span-2">
           <CardHeader>
             <CardTitle>Agenda de hoje</CardTitle>
           </CardHeader>
@@ -170,35 +147,23 @@ export default async function DashboardPage() {
                 <p className="text-sm">Nenhum atendimento agendado para hoje.</p>
               </div>
             ) : (
-              <div className="divide-y divide-border">
+              <div className="flex flex-col gap-2">
                 {agendamentosHoje.map((ag) => (
                   <div
                     key={ag.id}
-                    className="flex items-center justify-between py-3 first:pt-0 last:pb-0"
+                    className={cn(
+                      "rounded-md border-l-[3px] px-3 py-1.5 text-sm font-semibold",
+                      STATUS_COLOR[ag.status],
+                      STATUS_BORDER[ag.status]
+                    )}
                   >
-                    <div>
-                      <p className="font-medium text-text">
-                        {ag.pet.nome}{" "}
-                        <span className="text-text-tertiary">
-                          · {ag.cliente.nome}
-                        </span>
-                      </p>
-                      <p className="font-mono text-sm text-text-secondary">
-                        {ag.servico} ·{" "}
-                        {ag.dataHora.toLocaleTimeString("pt-BR", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </p>
-                    </div>
-                    <span
-                      className={cn(
-                        "rounded-full px-2.5 py-1 text-xs font-medium",
-                        STATUS_COLOR[ag.status]
-                      )}
-                    >
-                      {STATUS_LABEL[ag.status]}
+                    <span className="block font-mono text-[11px] font-bold opacity-85">
+                      {ag.dataHora.toLocaleTimeString("pt-BR", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
                     </span>
+                    {ag.pet.nome} · {ag.servico}
                   </div>
                 ))}
               </div>
@@ -207,9 +172,12 @@ export default async function DashboardPage() {
         </Card>
 
         {vacinasAVencer.length > 0 && (
-          <Card className="shadow-sm">
+          <Card className="shadow-sm border-warning/40 border-t-2">
             <CardHeader>
-              <CardTitle>Vacinas a vencer</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <Syringe className="h-4 w-4 text-warning" />
+                Vacinas a vencer
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="divide-y divide-border">
@@ -252,9 +220,12 @@ export default async function DashboardPage() {
         )}
 
         {podeEstoque && produtosBaixoEstoque.length > 0 && (
-          <Card className="shadow-sm">
+          <Card className="shadow-sm border-danger/40 border-t-2">
             <CardHeader>
-              <CardTitle>Estoque baixo</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4 text-danger" />
+                Estoque baixo
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="divide-y divide-border">

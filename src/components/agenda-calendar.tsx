@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { AgendamentoStatusSelect } from "@/components/agendamento-status-select";
 import { NovoAgendamentoDialog } from "@/components/novo-agendamento-dialog";
-import { STATUS_COLOR } from "@/lib/labels";
+import { STATUS_COLOR, STATUS_BORDER, STATUS_LABEL } from "@/lib/labels";
 import { StatusAgendamento } from "@/generated/prisma/client";
 import { cn } from "@/lib/utils";
 
@@ -37,6 +37,16 @@ type Visao = "semana" | "dia";
 
 const ALTURA_HORA = 56; // px por hora
 const DURACAO_PADRAO_MIN = 50;
+
+// Pontinho sólido usado na legenda de status abaixo da grade (mesma cor de
+// texto usada em STATUS_COLOR, mas como fundo).
+const STATUS_LEGENDA_DOT: Record<StatusAgendamento, string> = {
+  AGENDADO: "bg-info",
+  CONFIRMADO: "bg-warning",
+  EM_ATENDIMENTO: "bg-success",
+  CONCLUIDO: "bg-text-secondary",
+  CANCELADO: "bg-danger",
+};
 
 const DIA_SEMANA_LONGO = [
   "Domingo",
@@ -295,14 +305,13 @@ export function AgendaCalendar({
   }
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border bg-card">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b p-3">
+    <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border border-border bg-bg-elevated">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border p-3">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1">
             <Button
               variant="outline"
               size="icon-sm"
-              className="rounded-full"
               render={
                 <Link
                   href={`/agenda?data=${toISODateOnly(anterior)}&visao=${visao}`}
@@ -316,7 +325,6 @@ export function AgendaCalendar({
             <Button
               variant="outline"
               size="sm"
-              className="rounded-full"
               render={
                 <Link href={`/agenda?data=${toISODateOnly(hoje)}&visao=${visao}`} />
               }
@@ -327,7 +335,6 @@ export function AgendaCalendar({
             <Button
               variant="outline"
               size="icon-sm"
-              className="rounded-full"
               render={
                 <Link
                   href={`/agenda?data=${toISODateOnly(seguinte)}&visao=${visao}`}
@@ -342,14 +349,14 @@ export function AgendaCalendar({
           <p className="font-heading text-sm font-semibold capitalize">
             {formatarIntervalo(visao === "dia" ? referencia : semanaInicio, visao)}
           </p>
-          <div className="flex items-center gap-0.5 rounded-full border bg-muted/40 p-0.5 text-sm">
+          <div className="flex items-center gap-0.5 rounded-full border border-border bg-bg-sunken/60 p-0.5 text-sm">
             <Link
               href={`/agenda?data=${toISODateOnly(referencia)}&visao=semana`}
               className={cn(
                 "rounded-full px-3 py-1 transition-colors",
                 visao === "semana"
-                  ? "bg-card font-medium shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "bg-bg-elevated font-medium shadow-sm"
+                  : "text-text-secondary hover:text-text"
               )}
             >
               Semana
@@ -359,15 +366,15 @@ export function AgendaCalendar({
               className={cn(
                 "rounded-full px-3 py-1 transition-colors",
                 visao === "dia"
-                  ? "bg-card font-medium shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "bg-bg-elevated font-medium shadow-sm"
+                  : "text-text-secondary hover:text-text"
               )}
             >
               Dia
             </Link>
           </div>
         </div>
-        <Button className="rounded-full" onClick={() => abrirNovo(referencia)}>
+        <Button onClick={() => abrirNovo(referencia)}>
           <Plus className="h-4 w-4" /> Novo agendamento
         </Button>
       </div>
@@ -377,8 +384,8 @@ export function AgendaCalendar({
           className={cn("flex flex-1 flex-col", visao === "semana" && "min-w-180")}
         >
           {/* Cabeçalho dos dias */}
-          <div className="sticky top-0 z-10 flex border-b bg-card">
-            <div className="w-14 shrink-0 border-r" />
+          <div className="sticky top-0 z-10 flex border-b border-border bg-bg-elevated">
+            <div className="w-14 shrink-0 border-r border-border" />
             {dias.map((dia) => {
               const ehHoje = toISODateOnly(dia) === toISODateOnly(hoje);
               const fechado = DIAS_FECHADOS.includes(dia.getDay());
@@ -386,16 +393,16 @@ export function AgendaCalendar({
                 <div
                   key={dia.toISOString()}
                   className={cn(
-                    "flex flex-1 flex-col items-center gap-0 border-r py-2 last:border-r-0",
-                    fechado && "bg-muted/30"
+                    "flex flex-1 flex-col items-center gap-0 border-r border-border py-2 last:border-r-0",
+                    fechado && "bg-bg-sunken/50"
                   )}
                 >
-                  <span className="text-xs font-semibold text-foreground">
+                  <span className="text-xs font-semibold text-text">
                     {DIA_SEMANA_LONGO[dia.getDay()]}
                   </span>
                   <span
                     className={cn(
-                      "text-xs text-muted-foreground",
+                      "text-xs text-text-secondary",
                       ehHoje && "font-semibold text-primary"
                     )}
                   >
@@ -403,7 +410,7 @@ export function AgendaCalendar({
                     {toISODateOnly(dia).slice(5, 7)}
                   </span>
                   {fechado && (
-                    <span className="text-[10px] font-semibold tracking-wide text-muted-foreground/70 uppercase">
+                    <span className="text-[10px] font-semibold tracking-wide text-text-tertiary uppercase">
                       Fechado
                     </span>
                   )}
@@ -414,16 +421,16 @@ export function AgendaCalendar({
 
           {/* Grade de horários */}
           <div className="relative flex flex-1">
-            <div className="w-14 shrink-0 border-r">
+            <div className="w-14 shrink-0 border-r border-border">
               {horas.map((h, i) => (
                 <div
                   key={h}
-                  className="relative border-b text-right text-xs text-muted-foreground last:border-b-0"
+                  className="relative border-b border-border text-right text-xs text-text-secondary last:border-b-0"
                   style={{ height: ALTURA_HORA }}
                 >
                   <span
                     className={cn(
-                      "absolute right-1.5 bg-card px-0.5",
+                      "absolute right-1.5 bg-bg-elevated px-0.5",
                       i === 0 ? "top-0.5" : "-top-2"
                     )}
                   >
@@ -441,8 +448,8 @@ export function AgendaCalendar({
                 <div
                   key={chave}
                   className={cn(
-                    "relative flex-1 border-r last:border-r-0",
-                    fechado && "bg-muted/10"
+                    "relative flex-1 border-r border-border last:border-r-0",
+                    fechado && "bg-bg-sunken/40"
                   )}
                   style={{ height: ALTURA_HORA * horas.length }}
                 >
@@ -452,7 +459,7 @@ export function AgendaCalendar({
                       type="button"
                       disabled={fechado}
                       onClick={() => abrirNovo(dia, h)}
-                      className="block w-full border-b last:border-b-0 hover:bg-muted/40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+                      className="block w-full border-b border-border last:border-b-0 hover:bg-bg-sunken/60 disabled:cursor-not-allowed disabled:hover:bg-transparent"
                       style={{ height: ALTURA_HORA }}
                     />
                   ))}
@@ -485,7 +492,7 @@ export function AgendaCalendar({
                             e.stopPropagation();
                             setOcultosVisiveis(renderizavel.ocultos);
                           }}
-                          className="absolute z-0 overflow-hidden rounded-md border-l-2 border-muted-foreground/40 bg-muted px-1.5 py-0.5 text-left text-xs font-medium shadow-sm transition-opacity hover:opacity-80 hover:z-10"
+                          className="absolute z-0 overflow-hidden rounded-md border-l-2 border-text-secondary/40 bg-bg-sunken px-1.5 py-0.5 text-left text-xs font-medium shadow-sm transition-opacity hover:opacity-80 hover:z-10"
                           style={{ top, height: altura, left: esquerda, width: largura }}
                         >
                           +{renderizavel.ocultos.length} mais
@@ -505,19 +512,20 @@ export function AgendaCalendar({
                         }}
                         className={cn(
                           "absolute z-0 overflow-hidden rounded-md border-l-2 px-1.5 py-0.5 text-left text-xs shadow-sm transition-opacity hover:opacity-80 hover:z-10",
-                          STATUS_COLOR[ag.status]
+                          STATUS_COLOR[ag.status],
+                          STATUS_BORDER[ag.status]
                         )}
                         style={{ top, height: altura, left: esquerda, width: largura }}
                       >
-                        <p className="truncate font-medium">
+                        <span className="block truncate font-mono text-[10px] font-bold opacity-85">
                           {inicio.toLocaleTimeString("pt-BR", {
                             hour: "2-digit",
                             minute: "2-digit",
-                          })}{" "}
-                          {ag.petNome}
+                          })}
+                        </span>
+                        <p className="truncate font-medium">
+                          {ag.petNome} · {ag.servico}
                         </p>
-                        <p className="truncate opacity-80">{ag.servico}</p>
-                        <p className="truncate opacity-70">{ag.vetNome}</p>
                       </button>
                     );
                   })}
@@ -526,6 +534,15 @@ export function AgendaCalendar({
             })}
           </div>
         </div>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-4 border-t border-border px-3 py-2 text-xs text-text-secondary">
+        {(Object.keys(STATUS_LABEL) as StatusAgendamento[]).map((status) => (
+          <span key={status} className="inline-flex items-center gap-1.5">
+            <span className={cn("h-2 w-2 rounded-sm", STATUS_LEGENDA_DOT[status])} />
+            {STATUS_LABEL[status]}
+          </span>
+        ))}
       </div>
 
       <Dialog
@@ -540,14 +557,14 @@ export function AgendaCalendar({
               </DialogHeader>
               <div className="space-y-2 text-sm">
                 <p className="flex items-center gap-2">
-                  <Clock className="h-4 w-4 text-muted-foreground" />
+                  <Clock className="h-4 w-4 text-text-secondary" />
                   {new Date(selecionado.dataHora).toLocaleString("pt-BR", {
                     dateStyle: "full",
                     timeStyle: "short",
                   })}
                 </p>
                 <p className="flex items-center gap-2">
-                  <PawPrint className="h-4 w-4 text-muted-foreground" />
+                  <PawPrint className="h-4 w-4 text-text-secondary" />
                   <Link
                     href={`/pets/${selecionado.petId}`}
                     className="hover:underline"
@@ -556,11 +573,11 @@ export function AgendaCalendar({
                   </Link>
                 </p>
                 <p className="flex items-center gap-2">
-                  <User className="h-4 w-4 text-muted-foreground" />
+                  <User className="h-4 w-4 text-text-secondary" />
                   {selecionado.clienteNome}
                 </p>
                 <p className="flex items-center gap-2">
-                  <Stethoscope className="h-4 w-4 text-muted-foreground" />
+                  <Stethoscope className="h-4 w-4 text-text-secondary" />
                   {selecionado.vetNome}
                 </p>
               </div>
@@ -593,18 +610,19 @@ export function AgendaCalendar({
                   }}
                   className={cn(
                     "flex w-full items-center gap-2 rounded-md border-l-2 px-2 py-1.5 text-left text-sm shadow-sm transition-opacity hover:opacity-80",
-                    STATUS_COLOR[ag.status]
+                    STATUS_COLOR[ag.status],
+                    STATUS_BORDER[ag.status]
                   )}
                 >
-                  <span className="font-medium">
+                  <span className="font-mono text-xs font-bold opacity-85">
                     {inicio.toLocaleTimeString("pt-BR", {
                       hour: "2-digit",
                       minute: "2-digit",
                     })}
                   </span>
-                  <span className="truncate">{ag.petNome}</span>
-                  <span className="truncate opacity-80">— {ag.servico}</span>
-                  <span className="truncate opacity-70">({ag.vetNome})</span>
+                  <span className="truncate">
+                    {ag.petNome} · {ag.servico}
+                  </span>
                 </button>
               );
             })}
